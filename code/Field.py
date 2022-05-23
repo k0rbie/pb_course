@@ -1,3 +1,4 @@
+import sys
 from random import shuffle
 from solvability import *
 
@@ -7,66 +8,92 @@ class Field:
         self.side = side
         self.size = side * side
         self.arr = []
-        for i in range(self.size):
-            self.arr.append(Cell(i))
-        self.space = self.arr[-1]
-        self.space_ind = self.size - 1
-        self.gen_valid()
+        for i in range(1, self.size + 1):
+            self.arr.append(i)
+        self.space = self.size - 1
+        self.space_x = self.side - 1
+        self.space_y = self.side - 1
 
     def gen_valid(self):
         self.shuffle_arr()
-        if not self.invar():
-            self.cell(self.size).single_move((self.arr[(self.space_ind + 2) % self.size]))
+        if self.invar():
+            self.print()
+        else:
+            swap_ind = (self.space + 2) % 16
+            self.__swap(swap_ind - self.space)
+            self.find_space()
 
     def shuffle_arr(self):
         shuffle(self.arr)
-        self.space = self.cell(self.size)
-        self.space_ind = self.space.ind
+        self.find_space()
+
+    def find_space(self):
+        self.space = self.ind(self.size)
+        self.space_x = self.space % 4
+        self.space_y = self.space >> 2
 
     def print(self):
         for i in range(self.side):
             for j in range(self.side):
-                print(f"{self.arr[(i << 2) + j].value: 3}".replace("16", "  "), end="")
+                print(f"{self.arr[(i << 2) + j]: 3}".replace("16", "  "), end="")
             print()
         print()
 
-    def index(self, val):
-        return self.cell(val).ind
-
-    def cell(self, val):
-        for i in self.arr:
-            if i.value == val:
-                return i
-
-    def update_space(self):
-        self.space = self.cell(self.size)
-        self.space_ind = self.space.ind
-
-    def get_values(self):
-        val_arr = []
-        for i in self.arr:
-            val_arr.append(i.value)
-        return val_arr
+    def ind(self, val):
+        return self.arr.index(val)
 
     def invar(self) -> bool:
-        inversions_par = num_inver(self.get_values()) % 2
-        taxicab_par = self.index(self.size) % 2
+        inversions_par = num_inver(self.arr.copy()) % 2
+        taxicab_par = self.ind(self.size) % 2
         return taxicab_par == inversions_par
 
+    def __swap(self, change):
+        dest = self.space + change
+        self.arr[dest], self.arr[self.space] = self.arr[self.space], self.arr[dest]
+        self.space = dest
+        self.print()
 
-class Cell:
-    def __init__(self, ind):
-        self.value = ind + 1
-        self.ind = ind
-        self.x = ind // 4
-        self.y = ind % 4
-        self.fixed = False
+    def space_up(self):
+        if self.space_y:
+            self.__swap(-4)
+            self.space_y -= 1
+        else:
+            print("Помилка: Пробіл на верхньому краю поля!")
+            sys.exit()
 
-    def single_move(self, cell):
-        self.value, cell.value = cell.value, self.value
+    def space_down(self):
+        if self.space_y != self.side - 1:
+            self.__swap(+4)
+            self.space_y += 1
+        else:
+            print("Помилка: Пробіл на нижньому краю поля!")
+            sys.exit()
 
-    def fix(self):
-        self.fixed = True
+    def space_right(self):
+        if self.space_x != self.side - 1:
+            self.__swap(1)
+            self.space_x += 1
+        else:
+            print("Помилка: Пробіл на правому краю поля!")
+            sys.exit()
 
-    def unfix(self):
-        self.fixed = False
+    def space_left(self):
+        if self.space_x:
+            self.__swap(-1)
+            self.space_x -= 1
+        else:
+            print("Помилка: Пробіл на лівому краю поля!")
+            sys.exit()
+
+    def move_space_to(self, dest: int):
+        while self.space != dest:
+            dest_x = dest % 4
+            dest_y = dest >> 2
+            if dest_x > self.space_x:
+                self.space_right()
+            elif dest_x < self.space_x:
+                self.space_left()
+            if dest_y > self.space_y:
+                self.space_down()
+            elif dest_y < self.space_y:
+                self.space_up()
