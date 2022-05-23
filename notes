@@ -1,0 +1,7 @@
+cells: 1-15(16)
+basic interface: moves_number, time_spent, undo_button
+*extera elements: autoplay (stop autoplay)
+
+?victory
+
+number of invertions must be even
