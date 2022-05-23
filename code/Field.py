@@ -1,6 +1,14 @@
+import math
 import sys
+import time
 from random import shuffle
 from solvability import *
+
+
+def sign(value):
+    if not value:
+        return 0
+    return math.copysign(1, value)
 
 
 class Field:
@@ -8,6 +16,7 @@ class Field:
         self.side = side
         self.size = side * side
         self.arr = []
+        self.fixed = []
         for i in range(1, self.size + 1):
             self.arr.append(i)
         self.space = self.size - 1
@@ -20,8 +29,10 @@ class Field:
             self.print()
         else:
             swap_ind = (self.space + 2) % 16
-            self.__swap(swap_ind - self.space)
-            self.find_space()
+            self.arr[swap_ind], self.arr[self.space] = self.arr[self.space], self.arr[swap_ind]
+            self.space = swap_ind
+            self.update_space_coords()
+            self.print()
 
     def shuffle_arr(self):
         shuffle(self.arr)
@@ -29,8 +40,10 @@ class Field:
 
     def find_space(self):
         self.space = self.ind(self.size)
-        self.space_x = self.space % 4
-        self.space_y = self.space >> 2
+        self.update_space_coords()
+
+    def update_space_coords(self):
+        self.space_x, self.space_y = self.get_coords(self.space)
 
     def print(self):
         for i in range(self.side):
@@ -47,53 +60,78 @@ class Field:
         taxicab_par = self.ind(self.size) % 2
         return taxicab_par == inversions_par
 
-    def __swap(self, change):
-        dest = self.space + change
-        self.arr[dest], self.arr[self.space] = self.arr[self.space], self.arr[dest]
-        self.space = dest
-        self.print()
-
-    def space_up(self):
-        if self.space_y:
-            self.__swap(-4)
-            self.space_y -= 1
+    def space_swap(self, change):
+        if self.move_validation(self.space+change):
+            self.arr[self.space+change], self.arr[self.space] = \
+                self.arr[self.space], self.arr[self.space+change]
+            self.space += change
+            self.update_space_coords()
+            self.print()
+            time.sleep(0.5)
+            return change
         else:
-            print("Помилка: Пробіл на верхньому краю поля!")
+            print("Помилка: Спроба вийти за край поля!")
             sys.exit()
 
-    def space_down(self):
-        if self.space_y != self.side - 1:
-            self.__swap(+4)
-            self.space_y += 1
-        else:
-            print("Помилка: Пробіл на нижньому краю поля!")
-            sys.exit()
+    def get_coords(self, ind):
+        return ind % self.side, ind // self.side
 
-    def space_right(self):
-        if self.space_x != self.side - 1:
-            self.__swap(1)
-            self.space_x += 1
-        else:
-            print("Помилка: Пробіл на правому краю поля!")
-            sys.exit()
+    def move_validation(self, dest):
+        return sum(self.count_dist(dest)) == 1 and dest not in self.fixed
 
-    def space_left(self):
-        if self.space_x:
-            self.__swap(-1)
-            self.space_x -= 1
-        else:
-            print("Помилка: Пробіл на лівому краю поля!")
-            sys.exit()
+    def mins(self, arr):
+        arr_min = arr[0]
+        for i in arr[1:]:
+            if i < arr_min:
+
 
     def move_space_to(self, dest: int):
+        if dest in self.fixed:
+            print("?")
+            return
+        prev = 0
         while self.space != dest:
-            dest_x = dest % 4
-            dest_y = dest >> 2
-            if dest_x > self.space_x:
-                self.space_right()
-            elif dest_x < self.space_x:
-                self.space_left()
-            if dest_y > self.space_y:
-                self.space_down()
-            elif dest_y < self.space_y:
-                self.space_up()
+            valid_moves = []
+            for i in (-1, 1, -4, 4):
+                if self.move_validation((self.space + i) % self.size) and i != -prev:
+                    valid_moves.append(i)
+            if not len(valid_moves):
+                valid_moves.append(-prev)
+                print(f"{valid_moves=}")
+                
+            # curr = min(valid_moves, key=lambda x: sum(self.count_dist(dest, self.space + x)))
+            prev = self.space_swap(curr)
+
+    def count_dist(self, ind_1, ind_2=None):
+        if ind_2 is None:
+            pos_2 = self.space_x, self.space_y
+        else:
+            pos_2 = self.get_coords(ind_2)
+        pos_1 = self.get_coords(ind_1)
+        return abs(pos_1[0] - pos_2[0]), abs(pos_1[1] - pos_2[1])
+
+    # def move_val(self, value, dest):
+    #     curr_ind = self.ind(value)
+    #     if curr_ind == dest:
+    #         return
+    #     x_sign, y_sign = tuple(map(sign, self.count_dist(dest, curr_ind)))
+    #     options = []
+    #     if not x_sign:
+    #         if curr_ind + y_sign * self.side in self.fixed:
+    #             pass
+    #         elif y_sign == -1:
+    #             self.space_down()
+    #         else:   # y_sign == 1
+    #             self.space_up()
+    #
+    #     elif not y_sign:
+    #         option = curr_ind + x_sign
+    #         if option in self.fixed:
+    #             pass
+    #         else:
+    #             self.move_space_to(option)
+    #     else:
+    #         if x_diff != 0:
+    #             options.append(curr_ind + sign(x_diff))
+    #         if y_diff != 0:
+    #             options.append(curr_ind + sign(y_diff))
