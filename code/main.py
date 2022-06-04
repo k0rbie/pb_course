@@ -10,7 +10,7 @@ def main():
     field.gen_valid()
     control = Solver(field)
     while True:
-        control.move_space_to(int(input())-1)
+        control.move_space_to(int(input()))
 
 
 
