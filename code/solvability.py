@@ -1,5 +1,6 @@
 def num_inver(arr: list[16]):
     return inv_merge_sort(arr, 0, len(arr)-1)
+    # return inv_merge_sort(arr, 0, len(arr)-1)
 
 
 def inv_merge_sort(arr, l, r):

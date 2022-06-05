@@ -25,14 +25,15 @@ class Field:
 
     def gen_valid(self):
         self.shuffle_arr()
-        if self.invar():
-            self.print()
-        else:
-            swap_ind = (self.space + 2) % 16
+        if not self.invar():
+            new_x = (self.space_x + 2) % self.side
+            new_y = self.space_y
+            swap_ind = new_x + self.side * new_y
             self.arr[swap_ind], self.arr[self.space] = self.arr[self.space], self.arr[swap_ind]
             self.space = swap_ind
             self.update_space_coords()
-            self.print()
+            self.invar()
+        self.print()
 
     def shuffle_arr(self):
         shuffle(self.arr)
@@ -59,9 +60,11 @@ class Field:
         return self.arr.index(val)
 
     def invar(self) -> bool:
-        inversions_par = num_inver(self.arr.copy()) % 2
-        taxicab_par = self.ind(self.size) % 2
-        return taxicab_par == inversions_par
+        check_arr = self.arr.copy()
+        check_arr.remove(self.size)
+        inversions_par = num_inver(check_arr) % 2
+        space_y_par = (self.side - self.space_y - 1) % 2
+        return space_y_par == inversions_par
 
     def space_swap(self, change):
         if not change:
@@ -75,7 +78,6 @@ class Field:
             # time.sleep(0.5)
             return change
         print(f"Помилка: Спроба вийти за край поля! {self.space + change}")
-        self.print()
         sys.exit()
 
     def near_space(self, ind_1):

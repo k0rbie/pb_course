@@ -1,4 +1,4 @@
-class Queue:
+class MyQueue:
     def __init__(self):
         self.queue = []
 
@@ -7,5 +7,3 @@ class Queue:
 
     def dequeue(self):
         return self.queue.pop(0)
-
-
