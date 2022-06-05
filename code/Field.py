@@ -1,4 +1,6 @@
 import sys
+import time
+
 from solvability import *
 from Graph import LockableGraph
 from PyQt5.QtWidgets import QApplication
@@ -44,8 +46,6 @@ class Field:
                 self.arr[self.space], self.arr[self.space+change]
             self.space += change
             self.update_space_coords()
-            self.interface.show()
-            # time.sleep(0.5)
             return change
         print(f"Помилка: Спроба вийти за край поля! {self.space + change}")
         sys.exit()
