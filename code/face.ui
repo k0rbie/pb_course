@@ -6,9 +6,27 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>573</width>
-    <height>764</height>
+    <width>900</width>
+    <height>725</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>900</width>
+    <height>400</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>900</width>
+    <height>826</height>
+   </size>
+  </property>
+  <property name="sizeIncrement">
+   <size>
+    <width>612</width>
+    <height>826</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -18,16 +36,21 @@
 					color: white}
 QWidget{background-color: darkgray}
 QWidget#centralwidget{background-color: gray}
-Layout#gridLayout_2{background-color: orange}
-QPushButton{background-color: gray}</string>
+QPushButton{background-color: gray}
+QPushButton#pushButton_17{font:600 18pt &quot;FreeMono&quot; bold;
+					color: white}
+QPushButton#pushButton_18{font:600 18pt &quot;FreeMono&quot; bold;
+					color: white}
+QPushButton#pushButton_19{font:600 18pt &quot;FreeMono&quot; bold;
+					color: white}</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="gridLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>90</x>
       <y>210</y>
-      <width>431</width>
+      <width>435</width>
       <height>435</height>
      </rect>
     </property>
@@ -305,7 +328,7 @@ QPushButton{background-color: gray}</string>
         </size>
        </property>
        <property name="text">
-        <string> </string>
+        <string/>
        </property>
        <property name="flat">
         <bool>true</bool>
@@ -470,16 +493,47 @@ QPushButton{background-color: gray}</string>
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="gridLayoutWidget">
+   <widget class="QPushButton" name="pushButton_18">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>60</y>
-      <width>431</width>
-      <height>118</height>
+      <x>590</x>
+      <y>410</y>
+      <width>251</width>
+      <height>91</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout">
+    <property name="text">
+     <string>Наступний 
+крок</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_19">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>530</y>
+      <width>251</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Автоматичне
+розвʼязання</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>60</y>
+      <width>435</width>
+      <height>131</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_3">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMinimumSize</enum>
+     </property>
      <property name="leftMargin">
       <number>10</number>
      </property>
@@ -493,21 +547,8 @@ QPushButton{background-color: gray}</string>
       <number>10</number>
      </property>
      <property name="spacing">
-      <number>10</number>
+      <number>5</number>
      </property>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="maximumSize">
-        <size>
-         <width>420</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>переміщень</string>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="1">
       <widget class="QLabel" name="label_2">
        <property name="minimumSize">
@@ -530,6 +571,25 @@ QPushButton{background-color: gray}</string>
        </property>
       </widget>
      </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="minimumSize">
+        <size>
+         <width>267</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>267</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>переміщень</string>
+       </property>
+      </widget>
+     </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_3">
        <property name="maximumSize">
@@ -539,7 +599,7 @@ QPushButton{background-color: gray}</string>
         </size>
        </property>
        <property name="text">
-        <string>час</string>
+        <string>час гри</string>
        </property>
       </widget>
      </item>
@@ -567,16 +627,19 @@ QPushButton{background-color: gray}</string>
      </item>
     </layout>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>573</width>
-     <height>49</height>
-    </rect>
-   </property>
+   <widget class="QPushButton" name="pushButton_17">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>80</y>
+      <width>251</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Нова гра</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

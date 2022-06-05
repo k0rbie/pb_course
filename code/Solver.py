@@ -11,7 +11,10 @@ class Solver:
         self.graph = LockableGraph(self.field.side)
 
     def start(self):
-        pass
+        self.fill_row(0, 3)
+        self.fill_column(4, 12)
+        self.fill_row(5, 7)
+        self.fill_last_six()
 
     def move_space_to(self, dest: int):
         prev = self.field.space
