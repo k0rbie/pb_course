@@ -12,19 +12,21 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(900, 725)
-        MainWindow.setMinimumSize(QtCore.QSize(900, 400))
-        MainWindow.setMaximumSize(QtCore.QSize(900, 826))
+        MainWindow.setMinimumSize(QtCore.QSize(900, 725))
+        MainWindow.setMaximumSize(QtCore.QSize(900, 725))
         MainWindow.setSizeIncrement(QtCore.QSize(612, 826))
-        MainWindow.setStyleSheet("QWidget{font:600 22pt \"FreeMono\" bold;\n"
+        MainWindow.setStyleSheet("QLabel{font:600 20pt \"FreeMono\" bold;\n"
+"                    color: white}\n"
+"QPushButton{font:600 22pt \"FreeMono\" bold;\n"
 "                    color: white}\n"
 "QWidget{background-color: darkgray}\n"
 "QWidget#centralwidget{background-color: gray}\n"
 "QPushButton{background-color: gray}\n"
-"QPushButton#pushButton_17{font:600 18pt \"FreeMono\" bold;\n"
+"QPushButton#pushButton_17{font:600 17pt \"FreeMono\" bold;\n"
 "                    color: white}\n"
-"QPushButton#pushButton_18{font:600 18pt \"FreeMono\" bold;\n"
+"QPushButton#pushButton_18{font:600 17pt \"FreeMono\" bold;\n"
 "                    color: white}\n"
-"QPushButton#pushButton_19{font:600 18pt \"FreeMono\" bold;\n"
+"QPushButton#pushButton_19{font:600 17pt \"FreeMono\" bold;\n"
 "                    color: white}")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -264,7 +266,7 @@ class Ui_MainWindow(object):
         self.pushButton_18.setText(_translate("MainWindow", "Наступний \n"
 "крок"))
         self.pushButton_19.setText(_translate("MainWindow", "Автоматичне\n"
-"розвʼязання"))
+"розвʼязування"))
         self.label_2.setText(_translate("MainWindow", "0"))
         self.label.setText(_translate("MainWindow", "переміщень"))
         self.label_3.setText(_translate("MainWindow", "час гри"))

@@ -47,8 +47,6 @@ class Field:
             self.space += change
             self.update_space_coords()
             return change
-        print(f"Помилка: Спроба вийти за край поля! {self.space + change}")
-        sys.exit()
 
     def near_space(self, ind_1):
         return ind_1 in self.graph.adj_list[self.space]

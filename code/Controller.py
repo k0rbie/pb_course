@@ -9,13 +9,13 @@ from PyQt5 import QtGui  # QtWidgets, QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtCore import QTimer, QTime, Qt
 from solvability import *
+from functools import partial
 
 
 class Controller(QMainWindow):
     def __init__(self, side):
         super(Controller, self).__init__()
         self.field = Field(side)
-        self.solver = Solver(self.field)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.cells = [self.ui.pushButton,
@@ -35,28 +35,65 @@ class Controller(QMainWindow):
                       self.ui.pushButton_15,
                       self.ui.pushButton_16,
                       ]
+        self.solver = Solver(self.field)
         self.solution = []
         self.solution_timer = QTimer(self)
         self.solution_timer.timeout.connect(self.make_solution_step)
 
+        self.sec_count = 0
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.time_update)
+        self.moves_count = 0
+
+        self.connect_buttons()
+
+    def connect_buttons(self):
+        for cell in self.cells:
+            cell.clicked.connect(partial(self.try_to_move, cell))
+
         self.ui.pushButton_17.clicked.connect(self.new_game_pushed)
         self.ui.pushButton_18.clicked.connect(self.step_pushed)
         self.ui.pushButton_19.clicked.connect(self.solve_pushed)
 
+    def try_to_move(self, cell):
+        change = self.cells.index(cell) - self.field.space
+        if change in (-1, +1, -4, +4):
+            self.make_space_swap(change)
+            if not self.timer.isActive() or change != self.solution.pop(0):
+                self.generate_solution()
+            if self.check_if_solved():
+                self.end_game()
+
+    def check_if_solved(self):
+        return not len(self.solution)
+
+    def end_game(self):
+        self.turn_off_solver()
+        if self.timer.isActive():
+            self.cells[-1].setText("🐸")
+            self.timer.stop()
+
     def new_game_pushed(self):
         self.gen_valid()
         self.update_field()
-        self.time_start()
-        self.solution_timer.stop()
+        self.generate_solution()
+        self.moves_count = -1
+        self.moves_update()
+        self.timer_start()
+        self.turn_off_solver()
 
-    def time_start(self):
+    def timer_start(self):
+        self.sec_count = -1
         self.timer.start(1000)
-        self.ui.label_4.setText("0")
+        self.time_update()
 
     def time_update(self):
-        self.ui.label_4.setText(str(int(self.ui.label_4.text())+1))
+        self.sec_count += 1
+        self.ui.label_4.setText(f"{self.sec_count//60:02}:{self.sec_count%60:02}")
+
+    def moves_update(self):
+        self.moves_count += 1
+        self.ui.label_2.setText(str(self.moves_count))
 
     def gen_valid(self):
         self.shuffle_arr()
@@ -75,39 +112,48 @@ class Controller(QMainWindow):
         self.field.find_space()
 
     def step_pushed(self):
-        self.timer.stop()
+        self.make_solution_step()
 
     def solve_pushed(self):
+        self.switch_solver()
+
+    def turn_off_solver(self):
+        self.solution_timer.stop()
+        self.ui.pushButton_19.setText("Автоматичне\nрозвʼязування")
+
+    def turn_on_solver(self):
+        self.solution_timer.start(80)
+        self.ui.pushButton_19.setText("Зупинити")
+
+    def switch_solver(self):
+        if self.solution_timer.isActive():
+            self.turn_off_solver()
+        elif not self.check_if_solved():
+            self.turn_on_solver()
+
+    def generate_solution(self):
         self.solver = Solver(self.field)
         self.solution = self.solver.solve()
-        self.solution_timer.start(100)
-        # for move in solution:
-        #     self.field.space_swap(move)
-        #     self.show_swap(self.field.space - move, move)
-        # self.update_field()
 
     def make_solution_step(self):
+        print(self.solution)
         if len(self.solution):
-            move = self.solution.pop(0)
-            self.field.space_swap(move)
-            # self.show_swap(self.field.space - move, move)
-            self.update_field()
-        else:
-            self.solution_timer.stop()
+            self.make_space_swap(self.solution.pop(0))
+        if self.check_if_solved():
+            self.end_game()
 
     def update_field(self):
         for button, value in zip(self.cells, self.field.arr):
-            if value == 16:
-                button.setText("  ")
-                button.setFlat(True)
-            else:
-                button.setText(str(value))
-                button.setFlat(False)
-        # time.sleep(0.5)
+            button.setText(str(value))
+            button.setFlat(False)
+        self.cells[self.field.space].setText("")
+        self.cells[self.field.space].setFlat(True)
 
-    def show_swap(self, space, change):
-        temp = self.cells[space].text()
-        self.cells[space].setText(self.cells[space+change].text())
-        self.cells[space+change].setText(temp)
-        self.cells[space+change].setFlat(True)
-        self.cells[space].setFlat(False)
+    def make_space_swap(self, change):
+        self.field.space_swap(change)
+        space = self.field.space
+        self.cells[space-change].setFlat(False)
+        self.cells[space-change].setText(self.cells[space].text())
+        self.cells[space].setFlat(True)
+        self.cells[space].setText("")
+        self.moves_update()
