@@ -8,12 +8,10 @@ import timeit
 
 def main():
     app = QApplication(sys.argv)
-    ctrl = Controller(side)
+    ctrl = Controller()
     ctrl.show()
     app.exec()
 
 
 if __name__ == '__main__':
-    side = 4
     main()
-    # print(timeit.timeit(main, number=1))

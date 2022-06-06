@@ -4,12 +4,13 @@ import sys
 from Field import Field
 from Graph import LockableGraph
 from copy import deepcopy
+from Constants import *
 
 
 class Solver:
     def __init__(self, field: Field):
         self.field = deepcopy(field)
-        self.graph = LockableGraph(self.field.side)
+        self.graph = LockableGraph()
         self.seq = []
 
     def solve(self):
@@ -44,59 +45,56 @@ class Solver:
     def fill_row(self, beg, end):
         if self.field.arr[beg:end+1] == list(range(beg+1, end+2)):
             return
-        side = self.field.side
         for i in range(beg, end):
             self.move_value_to(i + 1, i)
             self.graph.close_vert(i)
-        self.move_space_to(end + side)
+        self.move_space_to(end + FIELD_SIDE)
         if self.field.arr[end] != end + 1:
-            self.move_value_to(end + 1, end + side)
-            self.graph.close_vert(end + side)
-            self.move_space_to(end - 2 + side)
+            self.move_value_to(end + 1, end + FIELD_SIDE)
+            self.graph.close_vert(end + FIELD_SIDE)
+            self.move_space_to(end - 2 + FIELD_SIDE)
             path = [-4, +1, +1, +4, -1, - 4, - 1, +4]
             self.add_moves(*path)
-            self.graph.open_vert(end + side)
+            self.graph.open_vert(end + FIELD_SIDE)
             self.graph.close_vert(end)
 
     def fill_column(self, beg, end):
-        if self.field.arr[beg:end+1: self.field.side] == list(range(beg+1, end+2, self.field.side)):
+        if self.field.arr[beg:end+1: FIELD_SIDE] == list(range(beg+1, end+2, FIELD_SIDE)):
             return
-        side = self.field.side
-        for i in range(beg, end, side):
+        for i in range(beg, end, FIELD_SIDE):
             self.move_value_to(i + 1, i)
             self.graph.close_vert(i)
         self.move_space_to(end + 1)
         if self.field.arr[end] != end + 1:
             self.move_value_to(end + 1, end + 1)
             self.graph.close_vert(end + 1)
-            self.move_space_to(end - 2 * side + 1)
+            self.move_space_to(end - 2 * FIELD_SIDE + 1)
             path = [-1, +4, +4, +1, -4, - 1, - 4, +1]
             self.add_moves(*path)
             self.graph.open_vert(end + 1)
             self.graph.close_vert(end)
 
     def fill_last_six(self):
-        start = self.field.size - self.field.side - 3
-        side = self.field.side
-        if self.field.arr[start] != start + 1 or self.field.arr[start + side] != start + side + 1:
-            self.move_value_to(start + 1 + side, start)
+        start = FIELD_SIZE - FIELD_SIDE - 3
+        if self.field.arr[start] != start + 1 or self.field.arr[start + FIELD_SIDE] != start + FIELD_SIDE + 1:
+            self.move_value_to(start + 1 + FIELD_SIDE, start)
             self.graph.close_vert(start)
-            self.move_space_to(start + side + 1)
-            if self.field.arr[start + side] == start + 1:
+            self.move_space_to(start + FIELD_SIDE + 1)
+            if self.field.arr[start + FIELD_SIDE] == start + 1:
                 path = [-1, -4, +1, +4, +1, -4, -1, -1, +4]
                 self.add_moves(*path)
             self.move_value_to(start + 1, start + 1)
             self.graph.close_vert(start + 1)
             self.graph.open_vert(start)
-            self.move_value_to(start+side+1, start+side)
-            self.graph.close_vert(start + side)
+            self.move_value_to(start+FIELD_SIDE+1, start+FIELD_SIDE)
+            self.graph.close_vert(start + FIELD_SIDE)
             self.add_moves(+1)
             self.graph.open_vert(start+1)
             self.graph.close_vert(start)
         else:
             self.graph.close_vert(start)
-            self.graph.close_vert(start + side)
+            self.graph.close_vert(start + FIELD_SIDE)
 
-        for i in start + 1, start + 2, start + side + 1:
+        for i in start + 1, start + 2, start + FIELD_SIDE + 1:
             self.move_value_to(i + 1, i)
             self.graph.close_vert(i)

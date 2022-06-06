@@ -1,15 +1,15 @@
 from MyQueue import MyQueue
 from copy import deepcopy
+from Constants import *
 
 
 class Graph:
     def __init__(self, adj_list: dict[int: {int}]):
         self.adj_list = adj_list
-        self.size = len(self.adj_list)
 
     def shortest_path_search(self, beg: int, end):
         queue = MyQueue()
-        p = [-1] * self.size
+        p = [-1] * FIELD_SIZE
         p[beg] = None
         v = beg
         while v != end:
@@ -27,19 +27,18 @@ class Graph:
 
 
 class LockableGraph(Graph):
-    def __init__(self, side):
-        size = side * side
-        self.opened_vert = list(range(size))
+    def __init__(self):
+        self.opened_vert = list(range(FIELD_SIZE))
         self.closed_vert = list()
         self.full = {i: [] for i in self.opened_vert}
 
-        for i in range(size - side):
-            self.full[i].append(i + side)
-            self.full[i + side].append(i)
+        for i in range(FIELD_SIZE - FIELD_SIDE):
+            self.full[i].append(i + FIELD_SIDE)
+            self.full[i + FIELD_SIDE].append(i)
 
         ind = 0
-        for i in range(side):
-            for j in range(side - 1):
+        for i in range(FIELD_SIDE):
+            for j in range(FIELD_SIDE - 1):
                 self.full[ind].append(ind + 1)
                 self.full[ind + 1].append(ind)
                 ind += 1
