@@ -37,6 +37,8 @@ class Controller(QMainWindow):
                       ]
         self.solution = []
         self.solution_timer = QTimer(self)
+        self.solution_timer.timeout.connect(self.make_solution_step)
+
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.time_update)
         self.ui.pushButton_17.clicked.connect(self.new_game_pushed)
@@ -47,6 +49,7 @@ class Controller(QMainWindow):
         self.gen_valid()
         self.update_field()
         self.time_start()
+        self.solution_timer.stop()
 
     def time_start(self):
         self.timer.start(1000)
@@ -72,23 +75,21 @@ class Controller(QMainWindow):
         self.field.find_space()
 
     def step_pushed(self):
-        for i in range(1, 11):
-            self.ui.label_4.setText(str(i))
-            time.sleep(0.5)
+        self.timer.stop()
 
     def solve_pushed(self):
         self.solver = Solver(self.field)
         self.solution = self.solver.solve()
-        self.solution_timer.timeout.connect(self.show_solution_step)
-        self.solution_timer.start(500)
+        self.solution_timer.start(100)
         # for move in solution:
         #     self.field.space_swap(move)
         #     self.show_swap(self.field.space - move, move)
         # self.update_field()
 
-    def show_solution_step(self):
+    def make_solution_step(self):
         if len(self.solution):
             move = self.solution.pop(0)
+            self.field.space_swap(move)
             # self.show_swap(self.field.space - move, move)
             self.update_field()
         else:
