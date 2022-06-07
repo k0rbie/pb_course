@@ -3,6 +3,7 @@ import time
 
 from solvability import *
 from Graph import LockableGraph
+from random import shuffle
 from PyQt5.QtWidgets import QApplication
 from Constants import *
 
@@ -47,6 +48,10 @@ class Field:
 
     def two_elements_swap(self, ind1, ind2):
         self.arr[ind1], self.arr[ind2] = self.arr[ind2], self.arr[ind1]
+        self.find_space()
+
+    def shuffle_arr(self):
+        shuffle(self.arr)
         self.find_space()
 
     def near_space(self, ind_1):
