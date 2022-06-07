@@ -9,19 +9,19 @@ from PyQt5.QtCore import QTimer, QTime, Qt
 
 
 class MainController:
-    def __init__(self, view: MainView):
-        self.view = view
-        self.field = Field()
-        self.solver = Solver(self.field)
+    def __init__(self, view):
+        self.view: MainView = view
+        self.field: Field = Field()
+        self.solver: Solver = Solver(self.field)
 
         self.reorder_cell_ind = None
 
         self.solution = []
-        self.solution_timer = QTimer(self)
+        self.solution_timer = QTimer()
         self.solution_timer.timeout.connect(self.make_solution_step)
 
         self.sec_count = 0
-        self.timer = QTimer(self)
+        self.timer = QTimer()
         self.timer.timeout.connect(self.time_update)
         self.moves_count = 0
 
@@ -31,26 +31,26 @@ class MainController:
             self.make_space_swap(change)
             if not self.timer.isActive() or change != self.solution.pop(0):
                 self.generate_solution()
-            if self.check_if_solved():
+            if not self.solution:
                 self.end_game()
 
     def chose_reorder(self, cell_ind):
         if self.reorder_cell_ind is not None:
             start_invar = self.field.invar()
             self.reorder(self.reorder_cell_ind, cell_ind)
-            self.reorder_cell_ind.setFlat(False)
+            self.view.switch_flat(self.reorder_cell_ind)
             self.reorder_cell_ind = None
             if self.field.invar() != start_invar:
-                self.switch_start(not start_invar)
+                self.set_start(not start_invar)
         else:
-            cell_ind.setFlat(True)
+            self.view.switch_flat(cell_ind)
             self.reorder_cell_ind = cell_ind
 
     def reorder(self, ind1, ind2):
         self.field.two_elements_swap(ind1, ind2)
         self.view.swap_text(ind1, ind2)
 
-    def switch_start(self, key):
+    def set_start(self, key):
         if key:
             self.view.enable_start()
         else:
@@ -87,18 +87,12 @@ class MainController:
     def end_game(self):
         self.turn_off_solver()
         if self.timer.isActive():
-            self.cells[-1].setText("🐸")
+            self.view.victory()
             self.timer.stop()
 
-    def check_if_solved(self):
-        return not self.solution
-
     def end_reorder(self):
-        self.cells[self.field.space].setFlat(True)
-        self.ui.pushButton_17.clicked.disconnect()
-        self.connect_buttons()
-        self.ui.pushButton_17.setText("Нова гра")
-        self.switch_to_move()
+        self.view.switch_flat(self.field.space)
+        self.view.finish_reorder()
         self.start_game()
 
     def timer_start(self):
@@ -106,11 +100,15 @@ class MainController:
 
     def time_update(self):
         self.sec_count += 1
-        self.ui.label_4.setText(f"{self.sec_count//MIN_TO_SEC:02}:{self.sec_count%MIN_TO_SEC:02}")
+        self.view.timer_update(self.sec_count)
 
     def moves_update(self):
         self.moves_count += 1
-        self.ui.label_2.setText(str(self.moves_count))
+        self.view.moves_count_update(self.moves_count)
+
+    def new_game_pushed(self):
+        self.reset_game()
+        self.view.start_dialog.exec()
 
     def step_pushed(self):
         self.make_solution_step()
@@ -120,16 +118,16 @@ class MainController:
 
     def turn_off_solver(self):
         self.solution_timer.stop()
-        self.ui.pushButton_19.setText("Автоматичне\nрозвʼязування")
+        self.view.solver_end()
 
     def turn_on_solver(self):
         self.solution_timer.start(SOLVER_INT)
-        self.ui.pushButton_19.setText("Зупинити")
+        self.view.solver_start()
 
     def switch_solver(self):
         if self.solution_timer.isActive():
             self.turn_off_solver()
-        elif not self.check_if_solved():
+        elif self.solution:
             self.turn_on_solver()
 
     def generate_solution(self):
@@ -139,14 +137,13 @@ class MainController:
     def make_solution_step(self):
         if self.solution:
             self.make_space_swap(self.solution.pop(0))
-        if self.check_if_solved():
+        if not self.solution:
             self.end_game()
 
     def make_space_swap(self, change):
         self.field.space_swap(change)
         space = self.field.space
-        self.cells[space-change].setFlat(False)
-        self.cells[space-change].setText(self.cells[space].text())
-        self.cells[space].setFlat(True)
-        self.cells[space].setText("")
+        self.view.swap_text(space, space-change)
+        self.view.switch_flat(space)
+        self.view.switch_flat(space-change)
         self.moves_update()
