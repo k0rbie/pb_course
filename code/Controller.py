@@ -70,12 +70,29 @@ class Controller(QMainWindow):
 
     def chose_reorder(self, cell):
         if self.reorder_cell:
+            start_invar = self.field.invar()
             self.reorder(self.reorder_cell, cell)
             self.reorder_cell.setFlat(False)
             self.reorder_cell = None
+            if self.field.invar() != start_invar:
+                self.switch_start(not start_invar)
         else:
             cell.setFlat(True)
             self.reorder_cell = cell
+
+    def switch_start(self, key):
+        if key:
+            self.enable_start()
+        else:
+            self.block_start()
+
+    def enable_start(self):
+        self.ui.pushButton_17.clicked.connect(self.end_reorder)
+        self.ui.pushButton_17.setText("Розпочати")
+
+    def block_start(self):
+        self.ui.pushButton_17.clicked.disconnect()
+        self.ui.pushButton_17.setText("Немає\nрозвʼязку")
 
     def connect_buttons(self):
         self.ui.pushButton_17.clicked.connect(self.new_game_pushed)
@@ -98,9 +115,10 @@ class Controller(QMainWindow):
     def user_reorder(self):
         self.switch_to_reorder()
         self.cells[self.field.space].setFlat(False)
-        self.ui.pushButton_17.setText("Завершити")
         self.ui.pushButton_17.clicked.disconnect()
-        self.ui.pushButton_17.clicked.connect(self.end_reorder)
+        self.ui.pushButton_18.clicked.disconnect()
+        self.ui.pushButton_19.clicked.disconnect()
+        self.enable_start()
 
     def start_game(self):
         self.generate_solution()
@@ -134,9 +152,10 @@ class Controller(QMainWindow):
 
     def end_reorder(self):
         self.cells[self.field.space].setFlat(True)
-        self.ui.pushButton_17.setText("Нова гра")
         self.ui.pushButton_17.clicked.disconnect()
-        self.ui.pushButton_17.clicked.connect(self.new_game_pushed)
+        self.connect_buttons()
+        self.ui.pushButton_17.setText("Нова гра")
+        self.switch_to_move()
         self.start_game()
 
     def timer_start(self):
