@@ -1,18 +1,17 @@
 from Field import Field
 from Solver import Solver
-import MainView
 
 from Constants import *
-from PyQt5 import QtGui  # QtWidgets, QtCore
-from solvability import *
-from PyQt5.QtCore import QTimer, QTime, Qt
+from PyQt5.QtCore import QTimer
+
+from copy import deepcopy
 
 
 class MainController:
     def __init__(self, view):
-        self.view: MainView = view
-        self.field: Field = Field()
-        self.solver: Solver = Solver(self.field)
+        self.view = view
+        self.field = Field()
+        self.solver = Solver(deepcopy(self.field))
 
         self.reorder_cell_ind = None
 
@@ -27,7 +26,7 @@ class MainController:
 
     def try_move_cell(self, index):
         change = index - self.field.space
-        if change in (-1, +1, -4, +4):
+        if change in DIRECTIONS:
             self.make_space_swap(change)
             if not self.timer.isActive() or change != self.solution.pop(0):
                 self.generate_solution()
@@ -40,8 +39,7 @@ class MainController:
             self.reorder(self.reorder_cell_ind, cell_ind)
             self.view.switch_flat(self.reorder_cell_ind)
             self.reorder_cell_ind = None
-            if self.field.invar() != start_invar:
-                self.set_start(not start_invar)
+            self.update_rebase_view(start_invar)
         else:
             self.view.switch_flat(cell_ind)
             self.reorder_cell_ind = cell_ind
@@ -50,11 +48,12 @@ class MainController:
         self.field.two_elements_swap(ind1, ind2)
         self.view.swap_text(ind1, ind2)
 
-    def set_start(self, key):
-        if key:
-            self.view.enable_start()
-        else:
-            self.view.block_start()
+    def update_rebase_view(self, prev_invar):
+        if prev_invar != self.field.invar():
+            if prev_invar:
+                self.view.block_start()
+            else:
+                self.view.enable_start()
 
     def random_reorder(self):
         self.gen_valid()
@@ -121,7 +120,7 @@ class MainController:
         self.view.solver_end()
 
     def turn_on_solver(self):
-        self.solution_timer.start(SOLVER_INT)
+        self.solution_timer.start(SOLVE_INTERVAL)
         self.view.solver_start()
 
     def switch_solver(self):
@@ -131,7 +130,7 @@ class MainController:
             self.turn_on_solver()
 
     def generate_solution(self):
-        self.solver = Solver(self.field)
+        self.solver = Solver(deepcopy(self.field))
         self.solution = self.solver.solve()
 
     def make_solution_step(self):

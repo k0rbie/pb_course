@@ -77,15 +77,15 @@ class MainView(QMainWindow):
         self.ui.pushButton_17.clicked.connect(self.controller.end_reorder)
         self.ui.pushButton_17.setText("Розпочати")
 
+    def block_start(self):
+        self.ui.pushButton_17.clicked.disconnect()
+        self.ui.pushButton_17.setText("Немає\nрозвʼязку")
+
     def finish_reorder(self):
         self.ui.pushButton_17.clicked.disconnect()
         self.connect_buttons()
         self.ui.pushButton_17.setText("Нова гра")
         self.switch_to_move()
-
-    def block_start(self):
-        self.ui.pushButton_17.clicked.disconnect()
-        self.ui.pushButton_17.setText("Немає\nрозвʼязку")
 
     def solver_start(self):
         self.ui.pushButton_19.setText("Зупинити")

@@ -1,16 +1,12 @@
-import sys
-import time
-
-from Graph import LockableGraph
+from Graph import Graph
 from random import shuffle
-from PyQt5.QtWidgets import QApplication
 from Constants import *
 
 
 class Field:
     def __init__(self):
         self.arr = []
-        self.graph = LockableGraph()
+        self.adj_list = Graph.puzzle_adj_list()
         for i in range(1, FIELD_SIZE + 1):
             self.arr.append(i)
         self.space = FIELD_SIZE - 1
@@ -40,7 +36,7 @@ class Field:
     def space_swap(self, change):
         if not change:
             return change
-        if self.near_space(self.space+change):
+        if self.next_to_space(self.space + change):
             self.two_elements_swap(self.space, self.space+change)
             self.update_space_coords()
             return change
@@ -53,10 +49,10 @@ class Field:
         shuffle(self.arr)
         self.find_space()
 
-    def near_space(self, ind_1):
-        return ind_1 in self.graph.adj_list[self.space]
+    def next_to_space(self, ind_1):
+        return ind_1 in self.adj_list[self.space]
 
-    def num_inver(self, arr: list[16]):
+    def num_inver(self, arr):
         return self.inv_merge_sort(arr, 0, len(arr) - 1)
 
     def inv_merge_sort(self, arr, l, r):
