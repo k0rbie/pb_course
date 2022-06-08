@@ -87,6 +87,7 @@ class MainController:
         self.timer_start()
 
     def reset_game(self):
+        self.view.remove_frog(self.field.space_ind)
         self.turn_off_solver()
         self.timer.stop()
         self.moves_count = -1
@@ -142,8 +143,7 @@ class MainController:
         self.solution = self.solver.solve()
 
     def make_solution_step(self):
-        if self.solution:
-            self.make_space_swap(self.solution.pop(0))
+        self.make_space_swap(self.solution.pop(0))
         if not self.solution:
             self.end_game()
 

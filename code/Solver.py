@@ -106,7 +106,6 @@ class Solver:
         else:
             self.graph.close_vert(start)
             self.graph.close_vert(start + DOWN)
-        self.fill_last_three()
 
     def fill_last_three(self):
         for ind in FIELD_SIZE + UP + LEFT - 1, FIELD_SIZE + UP - 1, FIELD_SIZE + LEFT - 1:

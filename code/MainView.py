@@ -118,3 +118,6 @@ class MainView(QMainWindow):
 
     def victory(self):
         self.cells[-1].setText("🐸")
+
+    def remove_frog(self, ind):
+        self.cells[ind].setText("")
