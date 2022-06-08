@@ -7,13 +7,12 @@ import MainController
 
 
 class MainView(QMainWindow):
-    def __init__(self):
+    def __init__(self, controller):
         super(MainView, self).__init__()
-        self.controller = MainController.MainController(self)
+        self.controller = controller
+
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.start_dialog = StartDialogView()
-        self.connect_start_dialog()
         self.cells = [self.ui.pushButton,
                       self.ui.pushButton_2,
                       self.ui.pushButton_3,
@@ -66,23 +65,24 @@ class MainView(QMainWindow):
             cell.clicked.connect(partial(self.controller.chose_reorder, self.cell_ind(cell)))
             cell.setFlat(False)
         self.disconnect_buttons()
-        self.enable_start()
 
     def switch_to_move(self):
         for cell in self.cells:
             cell.clicked.disconnect()
             cell.clicked.connect(partial(self.cell_move_pushed, cell))
 
+    def ordered_start(self):
+        self.ui.pushButton_17.setText("Змініть\nрозташування")
+
     def enable_start(self):
         self.ui.pushButton_17.clicked.connect(self.controller.end_reorder)
         self.ui.pushButton_17.setText("Розпочати")
 
     def block_start(self):
-        self.ui.pushButton_17.clicked.disconnect()
         self.ui.pushButton_17.setText("Немає\nрозвʼязку")
 
     def finish_reorder(self):
-        self.ui.pushButton_17.clicked.disconnect()
+        self.ui.pushButton_17.disconnect()
         self.connect_buttons()
         self.ui.pushButton_17.setText("Нова гра")
         self.switch_to_move()
@@ -102,16 +102,12 @@ class MainView(QMainWindow):
     def connect_buttons(self):
         self.ui.pushButton_17.clicked.connect(self.controller.new_game_pushed)
         self.ui.pushButton_18.clicked.connect(self.controller.step_pushed)
-        self.ui.pushButton_19.clicked.connect(self.controller.solve_pushed)
+        self.ui.pushButton_19.clicked.connect(self.controller.switch_solver)
 
     def disconnect_buttons(self):
-        self.ui.pushButton_17.clicked.disconnect()
-        self.ui.pushButton_18.clicked.disconnect()
-        self.ui.pushButton_19.clicked.disconnect()
-
-    def connect_start_dialog(self):
-        self.start_dialog.ui.pushButton.clicked.connect(self.controller.random_reorder)
-        self.start_dialog.ui.pushButton_2.clicked.connect(self.controller.user_reorder)
+        self.ui.pushButton_17.disconnect()
+        self.ui.pushButton_18.disconnect()
+        self.ui.pushButton_19.disconnect()
 
     def cell_move_pushed(self, cell):
         self.controller.try_move_cell(self.cell_ind(cell))

@@ -10,17 +10,16 @@ class Field:
         self.adj_list = Graph.puzzle_adj_list()
         for i in range(1, FIELD_SIZE + 1):
             self.arr.append(i)
-        # self.inv_counter = InversionCounter()
-        self.space = FIELD_SIZE - 1
+        self.space_ind = FIELD_SIZE - 1
         self.space_x = FIELD_SIDE - 1
         self.space_y = FIELD_SIDE - 1
 
     def find_space(self):
-        self.space = self.ind(FIELD_SIZE)
+        self.space_ind = self.ind(FIELD_SIZE)
         self.update_space_coords()
 
     def update_space_coords(self):
-        self.space_x, self.space_y = self.get_coords(self.space)
+        self.space_x, self.space_y = self.get_coords(self.space_ind)
 
     @staticmethod
     def get_coords(ind):
@@ -39,8 +38,8 @@ class Field:
     def space_swap(self, change):
         if not change:
             return change
-        if self.next_to_space(self.space + change):
-            self.two_elements_swap(self.space, self.space+change)
+        if self.next_to_space(self.space_ind + change):
+            self.two_elements_swap(self.space_ind, self.space_ind + change)
             self.update_space_coords()
             return change
 
@@ -49,8 +48,13 @@ class Field:
         self.find_space()
 
     def shuffle_arr(self):
-        shuffle(self.arr)
+        prev = self.arr.copy()
+        while self.is_sorted() or self.arr == prev:
+            shuffle(self.arr)
         self.find_space()
 
     def next_to_space(self, ind_1):
-        return ind_1 in self.adj_list[self.space]
+        return ind_1 in self.adj_list[self.space_ind]
+
+    def is_sorted(self):
+        return self.arr == list(range(1, FIELD_SIZE + 1))

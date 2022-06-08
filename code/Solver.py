@@ -49,7 +49,7 @@ class Solver:
             self.field.space_swap(move)
 
     def move_space_to(self, dest: int):
-        prev = self.field.space
+        prev = self.field.space_ind
         path = self.graph.shortest_path_search(prev, dest)
         for i in path:
             self.add_moves(i - prev)

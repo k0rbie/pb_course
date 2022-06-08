@@ -3,10 +3,18 @@ from PyQt5.QtWidgets import QDialog
 
 
 class StartDialogView(QDialog):
-    def __init__(self):
+    def __init__(self, controller):
         super(StartDialogView, self).__init__()
+        self.controller = controller
+
         self.ui = Ui_Start_Dialog()
         self.ui.setupUi(self)
-        self.custom_value = 0
+
+        self.connect_buttons()
+
+    def connect_buttons(self):
         self.ui.pushButton.clicked.connect(self.close)
         self.ui.pushButton_2.clicked.connect(self.close)
+        self.ui.pushButton.clicked.connect(self.controller.random_reorder)
+        self.ui.pushButton_2.clicked.connect(self.controller.user_reorder)
+

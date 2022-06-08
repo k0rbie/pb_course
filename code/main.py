@@ -1,16 +1,8 @@
-import sys
-import time
-from PyQt5.QtWidgets import QApplication, QMainWindow
-
-from MainView import MainView
-import timeit
+from MainController import MainController
 
 
 def main():
-    app = QApplication(sys.argv)
-    ctrl = MainView()
-    ctrl.show()
-    app.exec()
+    MainController()
 
 
 if __name__ == '__main__':
