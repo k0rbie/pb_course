@@ -19,10 +19,10 @@ class MainController:
         self.solution_timer = QTimer()
         self.solution_timer.timeout.connect(self.make_solution_step)
 
+        self.moves_count = 0
         self.sec_count = 0
         self.timer = QTimer()
         self.timer.timeout.connect(self.time_update)
-        self.moves_count = 0
 
     def try_move_cell(self, index):
         change = index - self.field.space
