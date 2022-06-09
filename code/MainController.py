@@ -15,163 +15,152 @@ from DialogView import StartDialogView, EndDialogView
 
 class MainController:
     def __init__(self):
-        self.field = Field()
-        self.solver = Solver(deepcopy(self.field))
+        self.__field = Field()
+        self.__solver = Solver(deepcopy(self.__field))
 
-        self.initial_field = None
-        self.reorder_cell_ind = None
+        self.__initial_field = None
+        self.__reorder_cell_ind = None
 
-        self.solution = []
-        self.solution_timer = QTimer()
-        self.solution_timer.timeout.connect(self.make_solution_step)
+        self.__solution = []
+        self.__solution_timer = QTimer()
+        self.__solution_timer.timeout.connect(self.make_solution_step)
 
-        self.moves_count = 0
-        self.sec_count = 0
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.time_update)
+        self.__moves_count = 0
+        self.__sec_count = 0
+        self.__timer = QTimer()
+        self.__timer.timeout.connect(self.__time_update)
 
         app = QApplication(sys.argv)
-        self.view = MainView(self)
-        self.start_dialog = StartDialogView(self)
-        self.end_dialog = EndDialogView(self)
-        self.view.show()
+        self.__view = MainView(self)
+        self.__start_dialog = StartDialogView(self)
+        self.__end_dialog = EndDialogView(self)
+        self.__view.show()
         app.exec()
 
     def try_move_cell(self, index):
-        if self.field.next_to_space(index):
-            change = index - self.field.space_ind
-            self.make_space_swap(change)
-            if self.timer.isActive():
-                if change != self.solution.pop(0):
-                    self.generate_solution()
-                elif self.field.is_sorted():
-                    self.end_game()
+        if self.__field.next_to_space(index):
+            change = index - self.__field.space_ind
+            self.__make_space_swap(change)
+            if self.__timer.isActive():
+                if change != self.__solution.pop(0):
+                    self.__generate_solution()
+                elif self.__field.is_sorted():
+                    self.__end_game()
 
     def user_reorder(self):
-        self.view.switch_to_reorder(self.field.space_ind)
-        self.update_rebase_view()
+        self.__view.switch_to_reorder(self.__field.space_ind)
+        self.__update_rebase_view()
 
-    def chose_reorder(self, cell_ind):
-        if self.reorder_cell_ind is not None:
-            self.reorder(self.reorder_cell_ind, cell_ind)
-            self.view.switch_flat(self.reorder_cell_ind)
-            self.reorder_cell_ind = None
-            self.update_rebase_view()
+    def chose_reorder_cell(self, cell_ind):
+        if self.__reorder_cell_ind is not None:
+            self.__field.two_elements_swap(cell_ind, self.__reorder_cell_ind)
+            self.__view.swap_text(cell_ind, self.__reorder_cell_ind)
+            self.__view.switch_flat(self.__reorder_cell_ind)
+            self.__reorder_cell_ind = None
+            self.__update_rebase_view()
         else:
-            self.view.switch_flat(cell_ind)
-            self.reorder_cell_ind = cell_ind
+            self.__view.switch_flat(cell_ind)
+            self.__reorder_cell_ind = cell_ind
 
-    def reorder(self, ind1, ind2):
-        self.field.two_elements_swap(ind1, ind2)
-        self.view.swap_text(ind1, ind2)
-
-    def update_rebase_view(self):
-        if self.field.is_sorted():
-            self.view.ordered_start()
-            self.view.hint_sorted()
-        elif self.field.invar():
-            self.view.enable_start()
-            self.view.hint_rebase()
+    def __update_rebase_view(self):
+        if self.__field.is_sorted():
+            self.__view.ordered_start()
+            self.__view.set_hint(SORTED_HINT_TEXT)
+        elif self.__field.invar():
+            self.__view.enable_start()
+            self.__view.set_hint(REBASE_HINT_TEXT)
         else:
-            self.view.block_start()
-            self.view.hint_unsolvable()
+            self.__view.block_start()
+            self.__view.set_hint(UNSOLVABLE_HINT_TEXT)
 
     def random_reorder(self):
-        self.gen_valid()
-        self.view.update_field(self.field.arr)
-        self.start_game()
-
-    def gen_valid(self):
-        self.field.shuffle_arr()
-        if not self.field.invar():
-            new_x = (self.field.space_x + 2) % FIELD_SIDE
-            new_y = self.field.space_y
+        self.__field.shuffle_arr()
+        if not self.__field.invar():
+            new_x = (self.__field.space_x + 2) % FIELD_SIDE
+            new_y = self.__field.space_y
             swap_ind = new_x + FIELD_SIDE * new_y
-            self.field.two_elements_swap(swap_ind, self.field.space_ind)
+            self.__field.two_elements_swap(swap_ind, self.__field.space_ind)
+        self.__view.update_field(self.__field.arr)
+        self.__view.switch_flat(self.__field.space_ind)
+        self.__start_game()
 
-    def start_game(self):
-        self.view.begin_game()
-        self.view.hint_ingame()
-        self.initial_field = self.field.matrix_view()
-        self.generate_solution()
-        self.timer_start()
+    def end_reorder(self):
+        self.__view.switch_flat(self.__field.space_ind)
+        self.__view.finish_reorder()
+        self.__start_game()
 
-    def reset_game(self):
-        self.view.remove_frog(self.field.space_ind)
-        self.turn_off_solver()
-        self.timer.stop()
-        self.moves_count = -1
-        self.moves_update()
-        self.sec_count = -1
-        self.time_update()
+    def __start_game(self):
+        self.__view.begin_game()
+        self.__view.set_hint(INGAME_HINT)
+        self.__initial_field = self.__field.matrix_view()
+        self.__generate_solution()
+        self.__timer.start(SEC_TO_MS)
 
-    def end_game(self):
-        self.turn_off_solver()
-        if self.timer.isActive():
-            self.view.victory()
-            self.view.hint_start_game()
-            self.timer.stop()
-            self.end_dialog.exec()
+    def __end_game(self):
+        self.__turn_off_solver()
+        if self.__timer.isActive():
+            self.__view.victory()
+            self.__view.set_hint(START_GAME_HINT)
+            self.__timer.stop()
+            self.__end_dialog.exec()
+
+    def chose_start(self):
+        self.__view.remove_frog(self.__field.space_ind)
+        self.__turn_off_solver()
+        self.__timer.stop()
+        self.__moves_count = -1
+        self.__moves_update()
+        self.__sec_count = -1
+        self.__time_update()
+        self.__start_dialog.exec()
 
     def save_to_file(self):
         with open("results.txt", "a") as f:
             f.write(f"Час закінчення гри:   {strftime('%d.%m.%Y %H:%M:%S', localtime(time()))}\n")
-            f.write(f"Кількість переміщень: {self.moves_count}\n")
-            f.write(f"Витрачений час:       {self.sec_count} сек.\n")
-            f.write(f"Початковий стан поля: \n{self.initial_field}\n")
+            f.write(f"Кількість переміщень: {self.__moves_count}\n")
+            f.write(f"Витрачений час:       {self.__sec_count} сек.\n")
+            f.write(f"Початковий стан поля: \n{self.__initial_field}\n")
 
-    def end_reorder(self):
-        self.view.switch_flat(self.field.space_ind)
-        self.view.finish_reorder()
-        self.start_game()
+    def __time_update(self):
+        self.__sec_count += 1
+        self.__view.timer_update(self.__sec_count)
 
-    def timer_start(self):
-        self.timer.start(SEC_TO_MS)
+    def __moves_update(self):
+        self.__moves_count += 1
+        self.__view.moves_count_update(self.__moves_count)
 
-    def time_update(self):
-        self.sec_count += 1
-        self.view.timer_update(self.sec_count)
+    def __turn_off_solver(self):
+        self.__solution_timer.stop()
+        self.__view.solver_end()
+        if self.__timer.isActive():
+            self.__view.set_hint(INGAME_HINT)
+        else:
+            self.__view.set_hint(START_GAME_HINT)
 
-    def moves_update(self):
-        self.moves_count += 1
-        self.view.moves_count_update(self.moves_count)
-
-    def new_game_pushed(self):
-        self.reset_game()
-        self.start_dialog.exec()
-
-    def step_pushed(self):
-        self.make_solution_step()
-
-    def turn_off_solver(self):
-        self.solution_timer.stop()
-        self.view.solver_end()
-
-    def turn_on_solver(self):
-        self.solution_timer.start(SOLVE_INTERVAL)
-        self.view.solver_start()
+    def __turn_on_solver(self):
+        self.__solution_timer.start(SOLVE_INTERVAL)
+        self.__view.solver_start()
+        self.__view.set_hint(SOLVER_HINT)
 
     def switch_solver(self):
-        if self.solution_timer.isActive():
-            self.turn_off_solver()
-            self.view.hint_ingame()
-        elif self.solution:
-            self.turn_on_solver()
-            self.view.hint_solver()
+        if self.__solution_timer.isActive():
+            self.__turn_off_solver()
+        elif self.__solution:
+            self.__turn_on_solver()
 
-    def generate_solution(self):
-        self.solver = Solver(deepcopy(self.field))
-        self.solution = self.solver.solve()
+    def __generate_solution(self):
+        self.__solver = Solver(deepcopy(self.__field))
+        self.__solution = self.__solver.solve()
 
     def make_solution_step(self):
-        self.make_space_swap(self.solution.pop(0))
-        if not self.solution:
-            self.end_game()
+        self.__make_space_swap(self.__solution.pop(0))
+        if not self.__solution:
+            self.__end_game()
 
-    def make_space_swap(self, change):
-        self.field.space_swap(change)
-        space = self.field.space_ind
-        self.view.swap_text(space, space-change)
-        self.view.switch_flat(space)
-        self.view.switch_flat(space-change)
-        self.moves_update()
+    def __make_space_swap(self, change):
+        self.__field.space_swap(change)
+        space = self.__field.space_ind
+        self.__view.swap_text(space, space - change)
+        self.__view.switch_flat(space)
+        self.__view.switch_flat(space - change)
+        self.__moves_update()

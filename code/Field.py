@@ -47,14 +47,14 @@ class Field:
         self.arr[ind1], self.arr[ind2] = self.arr[ind2], self.arr[ind1]
         self.find_space()
 
+    def next_to_space(self, ind_1):
+        return ind_1 in self.adj_list[self.space_ind]
+
     def shuffle_arr(self):
         prev = self.arr.copy()
         while self.is_sorted() or self.arr == prev:
             shuffle(self.arr)
         self.find_space()
-
-    def next_to_space(self, ind_1):
-        return ind_1 in self.adj_list[self.space_ind]
 
     def is_sorted(self):
         return self.arr == list(range(1, FIELD_SIZE + 1))
