@@ -38,13 +38,14 @@ class MainController:
         app.exec()
 
     def try_move_cell(self, index):
-        change = index - self.field.space_ind
         if self.field.next_to_space(index):
+            change = index - self.field.space_ind
             self.make_space_swap(change)
-            if not self.timer.isActive() or change != self.solution.pop(0):
-                self.generate_solution()
-            elif not self.solution:
-                self.end_game()
+            if self.timer.isActive():
+                if change != self.solution.pop(0):
+                    self.generate_solution()
+                elif self.field.is_sorted():
+                    self.end_game()
 
     def user_reorder(self):
         self.view.switch_to_reorder()
@@ -86,6 +87,7 @@ class MainController:
             self.field.two_elements_swap(swap_ind, self.field.space_ind)
 
     def start_game(self):
+        self.view.unlock_solver()
         self.initial_field = self.field.matrix_view()
         self.generate_solution()
         self.timer_start()
