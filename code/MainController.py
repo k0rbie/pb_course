@@ -30,6 +30,8 @@ class MainController:
         self.timer = QTimer()
         self.timer.timeout.connect(self.time_update)
 
+        self.start_enabled = False
+
         app = QApplication(sys.argv)
         self.view = MainView(self)
         self.start_dialog = StartDialogView(self)
@@ -48,6 +50,7 @@ class MainController:
 
     def user_reorder(self):
         self.view.switch_to_reorder()
+        self.start_enabled = False
         self.update_rebase_view()
 
     def chose_reorder(self, cell_ind):
@@ -65,10 +68,14 @@ class MainController:
         self.view.swap_text(ind1, ind2)
 
     def update_rebase_view(self):
+        if self.start_enabled:
+            self.view.disable_new_game()
+            self.start_enabled = False
         if self.field.is_sorted():
             self.view.ordered_start()
         elif self.field.invar():
             self.view.enable_start()
+            self.start_enabled = True
         else:
             self.view.block_start()
 
@@ -87,13 +94,17 @@ class MainController:
 
     def start_game(self):
         self.initial_field = self.field.matrix_view()
+        self.view.enable_solver()
         self.generate_solution()
         self.timer_start()
 
     def reset_game(self):
-        self.view.remove_frog(self.field.space_ind)
-        self.turn_off_solver()
-        self.timer.stop()
+        if self.timer.isActive():
+            self.timer.stop()
+            self.solution_timer.stop()
+            self.view.disable_solver()
+        else:
+            self.view.remove_frog(self.field.space_ind)
         self.moves_count = -1
         self.moves_update()
         self.sec_count = -1
@@ -103,8 +114,10 @@ class MainController:
         self.turn_off_solver()
         if self.timer.isActive():
             self.view.victory()
+            self.view.disable_solver()
             self.timer.stop()
             self.end_dialog.exec()
+            #
 
     def save_to_file(self):
         with open("results.txt", "a") as f:

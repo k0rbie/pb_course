@@ -31,12 +31,10 @@ class MainView(QMainWindow):
                       self.ui.pushButton_16,
                       ]
 
-        self.connect_buttons()
-        self.connect_cells()
+        self.disable_buttons()
+        self.enable_button(self.ui.pushButton_17, self.controller.new_game_pushed)
 
-    def connect_cells(self):
-        for cell in self.cells:
-            cell.clicked.connect(partial(self.cell_move_pushed, cell))
+        self.switch_to_move()
 
     def cell_ind(self, cell):
         return self.cells.index(cell)
@@ -64,26 +62,26 @@ class MainView(QMainWindow):
             cell.clicked.disconnect()
             cell.clicked.connect(partial(self.controller.chose_reorder, self.cell_ind(cell)))
             cell.setFlat(False)
-        self.disconnect_buttons()
+        self.disable_new_game()
 
     def switch_to_move(self):
         for cell in self.cells:
-            cell.clicked.disconnect()
+            cell.disconnect()
             cell.clicked.connect(partial(self.cell_move_pushed, cell))
 
     def ordered_start(self):
         self.ui.pushButton_17.setText("Змініть\nрозташування")
 
     def enable_start(self):
-        self.ui.pushButton_17.clicked.connect(self.controller.end_reorder)
+        self.enable_button(self.ui.pushButton_17, self.controller.end_reorder)
         self.ui.pushButton_17.setText("Розпочати")
 
     def block_start(self):
         self.ui.pushButton_17.setText("Немає\nрозвʼязку")
 
     def finish_reorder(self):
-        self.ui.pushButton_17.disconnect()
-        self.connect_buttons()
+        self.disable_button(self.ui.pushButton_17)
+        self.enable_buttons()
         self.ui.pushButton_17.setText("Нова гра")
         self.switch_to_move()
 
@@ -99,15 +97,35 @@ class MainView(QMainWindow):
     def moves_count_update(self, moves_count):
         self.ui.label_2.setText(str(moves_count))
 
-    def connect_buttons(self):
-        self.ui.pushButton_17.clicked.connect(self.controller.new_game_pushed)
-        self.ui.pushButton_18.clicked.connect(self.controller.step_pushed)
-        self.ui.pushButton_19.clicked.connect(self.controller.switch_solver)
+    def enable_buttons(self):
+        self.enable_new_game()
+        self.enable_solver()
 
-    def disconnect_buttons(self):
-        self.ui.pushButton_17.disconnect()
-        self.ui.pushButton_18.disconnect()
-        self.ui.pushButton_19.disconnect()
+    def enable_new_game(self):
+        self.enable_button(self.ui.pushButton_17, self.controller.new_game_pushed)
+
+    def enable_solver(self):
+        self.enable_button(self.ui.pushButton_18, self.controller.step_pushed)
+        self.enable_button(self.ui.pushButton_19, self.controller.switch_solver)
+
+    def enable_button(self, button, slot):
+        button.clicked.connect(slot)
+        button.setStyleSheet("")
+
+    def disable_buttons(self):
+        self.disable_new_game()
+        self.disable_solver()
+
+    def disable_new_game(self):
+        self.disable_button(self.ui.pushButton_17)
+
+    def disable_solver(self):
+        self.disable_button(self.ui.pushButton_18)
+        self.disable_button(self.ui.pushButton_19)
+
+    def disable_button(self, button):
+        button.disconnect()
+        button.setStyleSheet("color: rgb(119, 118, 123); background-color: rgb(192, 191, 188);")
 
     def cell_move_pushed(self, cell):
         self.controller.try_move_cell(self.cell_ind(cell))
