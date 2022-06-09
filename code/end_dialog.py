@@ -37,7 +37,7 @@ class Ui_Dialog(object):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Збереження"))
         self.pushButton.setText(_translate("Dialog", "Так"))
-        self.label.setText(_translate("Dialog", "Вітаю, ви розвʼязали пазл!\n"
+        self.label.setText(_translate("Dialog", "Вітаю, пазл розвʼязано!\n"
 "Зберегти результат у файл?"))
         self.pushButton_2.setText(_translate("Dialog", "Ні"))
 

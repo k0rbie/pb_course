@@ -1,9 +1,7 @@
 from face import Ui_MainWindow
-from DialogView import StartDialogView
 from PyQt5.QtWidgets import QMainWindow
 from functools import partial
 from Constants import *
-import MainController
 
 
 class MainView(QMainWindow):
@@ -13,6 +11,7 @@ class MainView(QMainWindow):
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
         self.cells = [self.ui.pushButton,
                       self.ui.pushButton_2,
                       self.ui.pushButton_3,
@@ -30,20 +29,32 @@ class MainView(QMainWindow):
                       self.ui.pushButton_15,
                       self.ui.pushButton_16,
                       ]
+        self.start_button = self.ui.pushButton_17
+        self.step_button = self.ui.pushButton_18
+        self.solver_button = self.ui.pushButton_19
+
         self.hint_label = self.ui.label_5
+        self.moves_label = self.ui.label_2
+        self.time_label = self.ui.label_4
+
         self.hint_start_game()
         self.lock_solver()
         self.connect_button(self.ui.pushButton_17, self.controller.new_game_pushed)
-        self.connect_cells()
+        self.connect_cells(self.controller.try_move_cell)
 
-    def connect_cells(self):
+    def connect_cells(self, slot):
         for cell in self.cells:
-            cell.clicked.connect(partial(self.cell_move_pushed, cell))
+            cell.clicked.connect(partial(slot, self.cell_ind(cell)))
+
+    def disconnect_cells(self):
+        for cell in self.cells:
+            cell.disconnect()
 
     def cell_ind(self, cell):
         return self.cells.index(cell)
 
-    def set_cell(self, button, value):
+    @staticmethod
+    def set_cell(button, value):
         button.setText(str(value).replace(str(FIELD_SIZE), ""))
         if value == FIELD_SIZE:
             button.setFlat(True)
@@ -54,17 +65,15 @@ class MainView(QMainWindow):
         for button, value in zip(self.cells, values):
             self.set_cell(button, value)
 
-    def switch_to_reorder(self):
-        for cell in self.cells:
-            cell.disconnect()
-            cell.clicked.connect(partial(self.controller.chose_reorder, self.cell_ind(cell)))
-            cell.setFlat(False)
+    def switch_to_reorder(self, space_ind):
+        self.disconnect_cells()
+        self.connect_cells(self.controller.chose_reorder)
+        self.cells[space_ind].setFlat(False)
         self.lock_solver()
 
     def switch_to_move(self):
-        for cell in self.cells:
-            cell.disconnect()
-            cell.clicked.connect(partial(self.cell_move_pushed, cell))
+        self.disconnect_cells()
+        self.connect_cells(self.controller.try_move_cell)
 
     def swap_text(self, ind1, ind2):
         cell1 = self.cells[ind1]
@@ -74,74 +83,73 @@ class MainView(QMainWindow):
         cell2.setText(saved)
 
     def ordered_start(self):
-        self.disconnect_button(self.ui.pushButton_17)
+        self.disconnect_button(self.start_button)
 
     def enable_start(self):
-        self.disconnect_button(self.ui.pushButton_17)
-        self.connect_button(self.ui.pushButton_17, self.controller.end_reorder)
+        self.disconnect_button(self.start_button)
+        self.connect_button(self.start_button, self.controller.end_reorder)
 
     def block_start(self):
-        self.disconnect_button(self.ui.pushButton_17)
+        self.disconnect_button(self.start_button)
 
     def finish_reorder(self):
-        self.ui.pushButton_17.disconnect()
-        self.connect_button(self.ui.pushButton_17, self.controller.new_game_pushed)
+        self.start_button.disconnect()
+        self.connect_button(self.start_button, self.controller.new_game_pushed)
         self.switch_to_move()
 
     def solver_start(self):
-        self.ui.pushButton_19.setText("Зупинити")
+        self.solver_button.setText(OFF_SOLVER_BUTTON)
 
     def solver_end(self):
-        self.ui.pushButton_19.setText("Автоматичне\nрозвʼязування")
-
-    def timer_update(self, sec_count):
-        self.ui.label_4.setText(f"{sec_count//MIN_TO_SEC:02}:{sec_count%MIN_TO_SEC:02}")
+        self.solver_button.setText(ON_SOLVER_BUTTON)
 
     def moves_count_update(self, moves_count):
-        self.ui.label_2.setText(str(moves_count))
+        self.moves_label.setText(str(moves_count))
+
+    def timer_update(self, sec_count):
+        self.time_label.setText(f"{sec_count//MIN_TO_SEC:02}:{sec_count%MIN_TO_SEC:02}")
 
     def connect_buttons(self):
-        self.connect_button(self.ui.pushButton_17, self.controller.new_game_pushed)
-        self.connect_button(self.ui.pushButton_18, self.controller.step_pushed)
-        self.connect_button(self.ui.pushButton_19, self.controller.switch_solver)
+        self.connect_button(self.start_button, self.controller.new_game_pushed)
+        self.connect_button(self.step_button, self.controller.step_pushed)
+        self.connect_button(self.solver_button, self.controller.switch_solver)
 
     def disconnect_buttons(self):
-        self.disconnect_button(self.ui.pushButton_17)
-        self.disconnect_button(self.ui.pushButton_18)
-        self.disconnect_button(self.ui.pushButton_19)
+        self.disconnect_button(self.start_button)
+        self.disconnect_button(self.step_button)
+        self.disconnect_button(self.solver_button)
 
-    def connect_button(self, button, slot):
+    @staticmethod
+    def connect_button(button, slot):
         button.clicked.connect(slot)
         button.setStyleSheet("")
 
-    def disconnect_button(self, button):
+    @staticmethod
+    def disconnect_button(button):
         try:
-            button.disconnect()
+            button.disconnect()  # повертає помилку, якщо жодний сигнал не підключено
             button.setStyleSheet(BLOCKED_STYLESHEET)
-        except TypeError:  # повертає помилку, якщо жодний сигнал не підключено
+        except TypeError:
             pass
-
-    def cell_move_pushed(self, cell):
-        self.controller.try_move_cell(self.cell_ind(cell))
 
     def switch_flat(self, ind):
         cell = self.cells[ind]
         cell.setFlat(not cell.isFlat())
 
     def victory(self):
-        self.cells[-1].setText("🐸")
+        self.cells[-1].setText(FROG)
         self.lock_solver()
 
     def remove_frog(self, ind):
         self.cells[ind].setText("")
 
     def begin_game(self):
-        self.connect_button(self.ui.pushButton_18, self.controller.step_pushed)
-        self.connect_button(self.ui.pushButton_19, self.controller.switch_solver)
+        self.connect_button(self.step_button, self.controller.step_pushed)
+        self.connect_button(self.solver_button, self.controller.switch_solver)
 
     def lock_solver(self):
-        self.disconnect_button(self.ui.pushButton_18)
-        self.disconnect_button(self.ui.pushButton_19)
+        self.disconnect_button(self.step_button)
+        self.disconnect_button(self.solver_button)
 
     def hint_start_game(self):
         self.hint_label.setText(START_GAME_HINT)

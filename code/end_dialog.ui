@@ -55,7 +55,7 @@ QPushButton{font:600 15pt &quot;FreeMono&quot; bold; color: white; background-co
     </rect>
    </property>
    <property name="text">
-    <string>Вітаю, ви розвʼязали пазл!
+    <string>Вітаю, пазл розвʼязано!
 Зберегти результат у файл?</string>
    </property>
    <property name="alignment">

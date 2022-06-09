@@ -48,7 +48,7 @@ class MainController:
                     self.end_game()
 
     def user_reorder(self):
-        self.view.switch_to_reorder()
+        self.view.switch_to_reorder(self.field.space_ind)
         self.update_rebase_view()
 
     def chose_reorder(self, cell_ind):
