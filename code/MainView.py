@@ -72,13 +72,16 @@ class MainView(QMainWindow):
             cell.clicked.connect(partial(self.cell_move_pushed, cell))
 
     def ordered_start(self):
+        self.disconnect_button(self.ui.pushButton_17)
         self.ui.pushButton_17.setText("Змініть\nрозташування")
 
     def enable_start(self):
+        self.disconnect_button(self.ui.pushButton_17)
         self.ui.pushButton_17.clicked.connect(self.controller.end_reorder)
         self.ui.pushButton_17.setText("Розпочати")
 
     def block_start(self):
+        self.disconnect_button(self.ui.pushButton_17)
         self.ui.pushButton_17.setText("Немає\nрозвʼязку")
 
     def finish_reorder(self):
@@ -105,9 +108,15 @@ class MainView(QMainWindow):
         self.ui.pushButton_19.clicked.connect(self.controller.switch_solver)
 
     def disconnect_buttons(self):
-        self.ui.pushButton_17.disconnect()
-        self.ui.pushButton_18.disconnect()
-        self.ui.pushButton_19.disconnect()
+        self.disconnect_button(self.ui.pushButton_17)
+        self.disconnect_button(self.ui.pushButton_18)
+        self.disconnect_button(self.ui.pushButton_19)
+
+    def disconnect_button(self, button):
+        try:
+            button.disconnect()
+        except TypeError:  # повертає помилку, якщо жодний сигнал не підключено
+            pass
 
     def cell_move_pushed(self, cell):
         self.controller.try_move_cell(self.cell_ind(cell))
