@@ -9,31 +9,12 @@ class Solver:
         self.seq = []
 
     def solve(self):
-        self.fill_line(0, FIELD_SIDE - 1, vertical=False)
-                                #  1  2  3  4
-                                #  *  *  *  *
-                                #  *  *  *  *
-                                #  *  *  *  *
-        self.fill_line(FIELD_SIDE, FIELD_SIZE - FIELD_SIDE, vertical=True)
-                                #  1  2  3  4
-                                #  5  *  *  *
-                                #  9  *  *  *
-                                # 13  *  *  *
-        self.fill_line(FIELD_SIDE + RIGHT, 2 * FIELD_SIDE - 1, vertical=False)
-                                #  1  2  3  4
-                                #  5  6  7  8
-                                #  9  *  *  *
-                                # 13  *  *  *
+        for i in range(FIELD_SIDE - 3):
+            self.fill_line(i, vertical=False)
+            self.fill_line(i, vertical=True)
+        self.fill_line(FIELD_SIDE-3, vertical=False)
         self.fill_two_of_five()
-                                #  1  2  3  4
-                                #  5  6  7  8
-                                #  9 10  *  *
-                                # 13 14  *  *
         self.fill_last_three()
-                                #  1  2  3  4
-                                #  5  6  7  8
-                                #  9 10 11 12
-                                # 13 14 15
         return self.seq
 
     def in_place(self, *arr_ind):
@@ -49,27 +30,28 @@ class Solver:
 
     def move_space_to(self, dest: int):
         prev = self.field.space_ind
-        path = self.graph.shortest_path_search(prev, dest)
+        path = self.graph.shortest_path_search(prev, dest)  # n^2
         for i in path:
             self.add_moves(i - prev)
             prev = i
 
-    def move_value_to(self, val: int, dest: int):
+    def move_value_to(self, val, dest):
         prev = self.field.ind(val)
         path = self.graph.shortest_path_search(prev, dest)
-        for i in path:
+        for i in path:  # n^3
             self.graph.close_vert(prev)
-            self.move_space_to(i)
+            self.move_space_to(i)           # n^2
             self.graph.open_vert(prev)
             self.add_moves(prev - i)
             prev = i
 
-    def fill_line(self, beg, end, vertical):
+    def fill_line(self, num, vertical):
         if vertical:
             along, across = DOWN, RIGHT  # fill column
+            beg, end = (num + 1) * FIELD_SIDE + num, FIELD_SIDE*(FIELD_SIDE-1) + num
         else:
             along, across = RIGHT, DOWN  # fill row
-
+            beg, end = num * (FIELD_SIDE + 1), FIELD_SIDE*(num + 1)-1
         if self.in_place(*(range(beg, end+1, along))):
             self.graph.close_vert(*(range(beg, end+1, along)))
             return
@@ -93,7 +75,7 @@ class Solver:
             self.graph.close_vert(start)
             self.move_space_to(start + DOWN + RIGHT)
             if self.field.arr[start + DOWN] == start + 1:
-                path = [LEFT, UP, RIGHT, DOWN, RIGHT, UP, LEFT, LEFT, DOWN]
+                path = [LEFT, UP, RIGHT, DOWN, RIGHT, UP, LEFT, LEFT, DOWN, RIGHT]
                 self.add_moves(*path)
             self.move_value_to(start + 1, start + RIGHT)
             self.graph.close_vert(start + RIGHT)

@@ -3,7 +3,7 @@ class MyQueue:
         self.queue = []
 
     def enqueue(self, x):
-        self.queue.append(x)
+        self.queue.append(x)        # 1
 
     def dequeue(self):
-        return self.queue.pop(0)
+        return self.queue.pop(0)    # n

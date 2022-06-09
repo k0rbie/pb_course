@@ -28,7 +28,7 @@ class Field:
     def ind(self, val):
         return self.arr.index(val)
 
-    def invar(self) -> bool:
+    def invar(self):
         check_arr = self.arr.copy()
         check_arr.remove(FIELD_SIZE)
         inversions_par = InvCount.num_inver(check_arr) % 2
@@ -47,14 +47,14 @@ class Field:
         self.arr[ind1], self.arr[ind2] = self.arr[ind2], self.arr[ind1]
         self.find_space()
 
+    def next_to_space(self, ind_1):
+        return ind_1 in self.adj_list[self.space_ind]
+
     def shuffle_arr(self):
         prev = self.arr.copy()
         while self.is_sorted() or self.arr == prev:
             shuffle(self.arr)
         self.find_space()
-
-    def next_to_space(self, ind_1):
-        return ind_1 in self.adj_list[self.space_ind]
 
     def is_sorted(self):
         return self.arr == list(range(1, FIELD_SIZE + 1))

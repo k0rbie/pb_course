@@ -8,7 +8,7 @@ class Graph:
         self.adj_list = adj_list
 
     @staticmethod
-    def puzzle_adj_list():
+    def puzzle_adj_list():  # n = n0 ^ 2
         adj_list = {i: [] for i in range(FIELD_SIZE)}
 
         for i in range(FIELD_SIZE - FIELD_SIDE):
@@ -29,8 +29,8 @@ class Graph:
         p = [-1] * FIELD_SIZE
         p[beg] = None
         v = beg
-        while v != end:
-            for u in self.adj_list[v]:
+        while v != end:  # n
+            for u in self.adj_list[v]:  # n0^2
                 if p[u] == -1:
                     p[u] = v
                     queue.enqueue(u)
@@ -57,8 +57,8 @@ class LockableGraph(Graph):
                 continue
             self.closed_vert.add(i)
             self.opened_vert.remove(i)
-            for j in self.adj_list[i]:
-                self.adj_list[j].remove(i)
+            for j in self.adj_list[i]:  # c
+                self.adj_list[j].remove(i)  # n
             self.adj_list[i] = []
 
     def open_vert(self, *v):
@@ -67,7 +67,7 @@ class LockableGraph(Graph):
                 continue
             self.opened_vert.add(i)
             self.closed_vert.remove(i)
-            for j in self.full[i]:
+            for j in self.full[i]:  # c
                 if j not in self.closed_vert:
-                    self.adj_list[j].append(i)
-                    self.adj_list[i].append(j)
+                    self.adj_list[j].append(i)  # c
+                    self.adj_list[i].append(j)  # c
