@@ -30,6 +30,8 @@ class MainView(QMainWindow):
                       self.ui.pushButton_15,
                       self.ui.pushButton_16,
                       ]
+        self.hint_label = self.ui.label_5
+        self.hint_start_game()
         self.lock_solver()
         self.connect_button(self.ui.pushButton_17, self.controller.new_game_pushed)
         self.connect_cells()
@@ -73,21 +75,17 @@ class MainView(QMainWindow):
 
     def ordered_start(self):
         self.disconnect_button(self.ui.pushButton_17)
-        self.ui.pushButton_17.setText("Змініть\nрозташування")
 
     def enable_start(self):
         self.disconnect_button(self.ui.pushButton_17)
         self.connect_button(self.ui.pushButton_17, self.controller.end_reorder)
-        self.ui.pushButton_17.setText("Розпочати")
 
     def block_start(self):
         self.disconnect_button(self.ui.pushButton_17)
-        self.ui.pushButton_17.setText("Немає\nрозвʼязку")
 
     def finish_reorder(self):
         self.ui.pushButton_17.disconnect()
         self.connect_button(self.ui.pushButton_17, self.controller.new_game_pushed)
-        self.ui.pushButton_17.setText("Нова гра")
         self.switch_to_move()
 
     def solver_start(self):
@@ -119,7 +117,7 @@ class MainView(QMainWindow):
     def disconnect_button(self, button):
         try:
             button.disconnect()
-            button.setStyleSheet("color: rgb(119, 118, 123); background-color: rgb(192, 191, 188);")
+            button.setStyleSheet(BLOCKED_STYLESHEET)
         except TypeError:  # повертає помилку, якщо жодний сигнал не підключено
             pass
 
@@ -137,10 +135,28 @@ class MainView(QMainWindow):
     def remove_frog(self, ind):
         self.cells[ind].setText("")
 
-    def unlock_solver(self):
+    def begin_game(self):
         self.connect_button(self.ui.pushButton_18, self.controller.step_pushed)
         self.connect_button(self.ui.pushButton_19, self.controller.switch_solver)
 
     def lock_solver(self):
         self.disconnect_button(self.ui.pushButton_18)
         self.disconnect_button(self.ui.pushButton_19)
+
+    def hint_start_game(self):
+        self.hint_label.setText(START_GAME_HINT)
+
+    def hint_rebase(self):
+        self.hint_label.setText(REBASE_HINT_TEXT)
+
+    def hint_unsolvable(self):
+        self.hint_label.setText(UNSOLVABLE_HINT_TEXT)
+
+    def hint_sorted(self):
+        self.hint_label.setText(SORTED_HINT_TEXT)
+
+    def hint_ingame(self):
+        self.hint_label.setText(INGAME_HINT)
+
+    def hint_solver(self):
+        self.hint_label.setText(SOLVER_HINT)

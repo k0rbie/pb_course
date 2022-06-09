@@ -68,10 +68,13 @@ class MainController:
     def update_rebase_view(self):
         if self.field.is_sorted():
             self.view.ordered_start()
+            self.view.hint_sorted()
         elif self.field.invar():
             self.view.enable_start()
+            self.view.hint_rebase()
         else:
             self.view.block_start()
+            self.view.hint_unsolvable()
 
     def random_reorder(self):
         self.gen_valid()
@@ -87,7 +90,8 @@ class MainController:
             self.field.two_elements_swap(swap_ind, self.field.space_ind)
 
     def start_game(self):
-        self.view.unlock_solver()
+        self.view.begin_game()
+        self.view.hint_ingame()
         self.initial_field = self.field.matrix_view()
         self.generate_solution()
         self.timer_start()
@@ -105,6 +109,7 @@ class MainController:
         self.turn_off_solver()
         if self.timer.isActive():
             self.view.victory()
+            self.view.hint_start_game()
             self.timer.stop()
             self.end_dialog.exec()
 
@@ -149,8 +154,10 @@ class MainController:
     def switch_solver(self):
         if self.solution_timer.isActive():
             self.turn_off_solver()
+            self.view.hint_ingame()
         elif self.solution:
             self.turn_on_solver()
+            self.view.hint_solver()
 
     def generate_solution(self):
         self.solver = Solver(deepcopy(self.field))

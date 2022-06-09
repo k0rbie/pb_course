@@ -15,7 +15,7 @@ class Ui_MainWindow(object):
         MainWindow.setMinimumSize(QtCore.QSize(900, 725))
         MainWindow.setMaximumSize(QtCore.QSize(900, 725))
         MainWindow.setSizeIncrement(QtCore.QSize(612, 826))
-        MainWindow.setStyleSheet("QLabel{font:600 20pt \"FreeMono\" bold;\n"
+        MainWindow.setStyleSheet("QLabel{font:600 18pt \"FreeMono\" bold;\n"
 "                    color: white}\n"
 "QLabel#label_5{font-size: 18px}\n"
 "QPushButton{font:600 22pt \"FreeMono\" bold;\n"
@@ -244,6 +244,7 @@ class Ui_MainWindow(object):
         self.pushButton_17.setObjectName("pushButton_17")
         self.label_5 = QtWidgets.QLabel(self.centralwidget)
         self.label_5.setGeometry(QtCore.QRect(590, 225, 251, 131))
+        self.label_5.setText("")
         self.label_5.setAlignment(QtCore.Qt.AlignCenter)
         self.label_5.setWordWrap(True)
         self.label_5.setObjectName("label_5")
@@ -296,6 +297,6 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "переміщень"))
         self.label_3.setText(_translate("MainWindow", "час гри"))
         self.label_4.setText(_translate("MainWindow", "00:00"))
-        self.pushButton_17.setText(_translate("MainWindow", "Нова гра"))
-        self.label_5.setText(_translate("MainWindow", "Натисніть на кнопку \"Нова гра\" щоб почати"))
+        self.pushButton_17.setText(_translate("MainWindow", "Почати нову\n"
+"гру"))
 

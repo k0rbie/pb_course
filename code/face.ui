@@ -32,7 +32,7 @@
    <string>Гра у 15</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QLabel{font:600 20pt &quot;FreeMono&quot; bold;
+   <string notr="true">QLabel{font:600 18pt &quot;FreeMono&quot; bold;
 					color: white}
 QLabel#label_5{font-size: 18px}
 QPushButton{font:600 22pt &quot;FreeMono&quot; bold;
@@ -641,7 +641,8 @@ QPushButton#pushButton_19{font:600 17pt &quot;FreeMono&quot; bold;
      </rect>
     </property>
     <property name="text">
-     <string>Нова гра</string>
+     <string>Почати нову
+гру</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_5">
@@ -654,7 +655,7 @@ QPushButton#pushButton_19{font:600 17pt &quot;FreeMono&quot; bold;
      </rect>
     </property>
     <property name="text">
-     <string>Натисніть на кнопку &quot;Нова гра&quot; щоб почати</string>
+     <string/>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
