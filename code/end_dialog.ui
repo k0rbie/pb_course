@@ -23,31 +23,15 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Задати поле</string>
+   <string>Збереження</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QLabel{font:600 16pt &quot;FreeMono&quot; bold;
 					color: white}
 QDialog{background-color: gray}
-QPushButton{font:600 15pt &quot;FreeMono&quot; bold; color: white; background-color: gray}</string>
+QPushButton{font:600 15pt &quot;FreeMono&quot; bold; color: white; background-color: gray}
+</string>
   </property>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>10</y>
-     <width>471</width>
-     <height>91</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Оберіть спосіб задавання
-стартового розташування</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-  </widget>
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
@@ -58,7 +42,24 @@ QPushButton{font:600 15pt &quot;FreeMono&quot; bold; color: white; background-co
     </rect>
    </property>
    <property name="text">
-    <string>Випадково</string>
+    <string>Так</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>10</y>
+     <width>471</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Вітаю, ви розвʼязали пазл!
+Зберегти результат у файл?</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton_2">
@@ -71,7 +72,7 @@ QPushButton{font:600 15pt &quot;FreeMono&quot; bold; color: white; background-co
     </rect>
    </property>
    <property name="text">
-    <string>Вручну</string>
+    <string>Ні</string>
    </property>
   </widget>
  </widget>

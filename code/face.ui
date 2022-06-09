@@ -34,9 +34,11 @@
   <property name="styleSheet">
    <string notr="true">QLabel{font:600 20pt &quot;FreeMono&quot; bold;
 					color: white}
+QLabel#label_5{font-size: 18px}
 QPushButton{font:600 22pt &quot;FreeMono&quot; bold;
 					color: white}
 QWidget{background-color: darkgray}
+QLabel{background-color: none}
 QWidget#centralwidget{background-color: gray}
 QPushButton{background-color: gray}
 QPushButton#pushButton_17{font:600 17pt &quot;FreeMono&quot; bold;
@@ -640,6 +642,25 @@ QPushButton#pushButton_19{font:600 17pt &quot;FreeMono&quot; bold;
     </property>
     <property name="text">
      <string>Нова гра</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>225</y>
+      <width>251</width>
+      <height>131</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Натисніть на кнопку &quot;Нова гра&quot; щоб почати</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>

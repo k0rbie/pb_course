@@ -6,10 +6,11 @@ from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication
 from copy import deepcopy
 
+from time import time, localtime, strftime
 import sys
 
 from MainView import MainView
-from StartDialogView import StartDialogView
+from DialogView import StartDialogView, EndDialogView
 
 
 class MainController:
@@ -17,6 +18,7 @@ class MainController:
         self.field = Field()
         self.solver = Solver(deepcopy(self.field))
 
+        self.initial_field = None
         self.reorder_cell_ind = None
 
         self.solution = []
@@ -31,16 +33,17 @@ class MainController:
         app = QApplication(sys.argv)
         self.view = MainView(self)
         self.start_dialog = StartDialogView(self)
+        self.end_dialog = EndDialogView(self)
         self.view.show()
         app.exec()
 
     def try_move_cell(self, index):
         change = index - self.field.space_ind
-        if change in DIRECTIONS:
+        if self.field.next_to_space(index):
             self.make_space_swap(change)
             if not self.timer.isActive() or change != self.solution.pop(0):
                 self.generate_solution()
-            if not self.solution:
+            elif not self.solution:
                 self.end_game()
 
     def user_reorder(self):
@@ -83,6 +86,7 @@ class MainController:
             self.field.two_elements_swap(swap_ind, self.field.space_ind)
 
     def start_game(self):
+        self.initial_field = self.field.matrix_view()
         self.generate_solution()
         self.timer_start()
 
@@ -100,6 +104,14 @@ class MainController:
         if self.timer.isActive():
             self.view.victory()
             self.timer.stop()
+            self.end_dialog.exec()
+
+    def save_to_file(self):
+        with open("results.txt", "a") as f:
+            f.write(f"Час закінчення гри:   {strftime('%d.%m.%Y %H:%M:%S', localtime(time()))}\n")
+            f.write(f"Кількість переміщень: {self.moves_count}\n")
+            f.write(f"Витрачений час:       {self.sec_count} сек.\n")
+            f.write(f"Початковий стан поля: \n{self.initial_field}\n")
 
     def end_reorder(self):
         self.view.switch_flat(self.field.space_ind)

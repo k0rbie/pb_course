@@ -19,7 +19,6 @@ class Solver:
                                 #  5  *  *  *
                                 #  9  *  *  *
                                 # 13  *  *  *
-
         self.fill_line(FIELD_SIDE + RIGHT, 2 * FIELD_SIDE - 1, vertical=False)
                                 #  1  2  3  4
                                 #  5  6  7  8
@@ -72,6 +71,7 @@ class Solver:
             along, across = RIGHT, DOWN  # fill row
 
         if self.in_place(*(range(beg, end+1, along))):
+            self.graph.close_vert(*(range(beg, end+1, along)))
             return
         for i in range(beg, end, along):
             self.move_value_to(i + 1, i)

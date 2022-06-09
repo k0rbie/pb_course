@@ -1,5 +1,5 @@
 from face import Ui_MainWindow
-from StartDialogView import StartDialogView
+from DialogView import StartDialogView
 from PyQt5.QtWidgets import QMainWindow
 from functools import partial
 from Constants import *

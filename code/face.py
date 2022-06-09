@@ -17,9 +17,11 @@ class Ui_MainWindow(object):
         MainWindow.setSizeIncrement(QtCore.QSize(612, 826))
         MainWindow.setStyleSheet("QLabel{font:600 20pt \"FreeMono\" bold;\n"
 "                    color: white}\n"
+"QLabel#label_5{font-size: 18px}\n"
 "QPushButton{font:600 22pt \"FreeMono\" bold;\n"
 "                    color: white}\n"
 "QWidget{background-color: darkgray}\n"
+"QLabel{background-color: none}\n"
 "QWidget#centralwidget{background-color: gray}\n"
 "QPushButton{background-color: gray}\n"
 "QPushButton#pushButton_17{font:600 17pt \"FreeMono\" bold;\n"
@@ -240,10 +242,33 @@ class Ui_MainWindow(object):
         self.pushButton_17 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_17.setGeometry(QtCore.QRect(590, 80, 251, 91))
         self.pushButton_17.setObjectName("pushButton_17")
+        self.label_5 = QtWidgets.QLabel(self.centralwidget)
+        self.label_5.setGeometry(QtCore.QRect(590, 225, 251, 131))
+        self.label_5.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_5.setWordWrap(True)
+        self.label_5.setObjectName("label_5")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        MainWindow.setTabOrder(self.pushButton_17, self.pushButton_18)
+        MainWindow.setTabOrder(self.pushButton_18, self.pushButton_19)
+        MainWindow.setTabOrder(self.pushButton_19, self.pushButton)
+        MainWindow.setTabOrder(self.pushButton, self.pushButton_2)
+        MainWindow.setTabOrder(self.pushButton_2, self.pushButton_3)
+        MainWindow.setTabOrder(self.pushButton_3, self.pushButton_4)
+        MainWindow.setTabOrder(self.pushButton_4, self.pushButton_5)
+        MainWindow.setTabOrder(self.pushButton_5, self.pushButton_6)
+        MainWindow.setTabOrder(self.pushButton_6, self.pushButton_7)
+        MainWindow.setTabOrder(self.pushButton_7, self.pushButton_8)
+        MainWindow.setTabOrder(self.pushButton_8, self.pushButton_9)
+        MainWindow.setTabOrder(self.pushButton_9, self.pushButton_10)
+        MainWindow.setTabOrder(self.pushButton_10, self.pushButton_11)
+        MainWindow.setTabOrder(self.pushButton_11, self.pushButton_12)
+        MainWindow.setTabOrder(self.pushButton_12, self.pushButton_13)
+        MainWindow.setTabOrder(self.pushButton_13, self.pushButton_14)
+        MainWindow.setTabOrder(self.pushButton_14, self.pushButton_15)
+        MainWindow.setTabOrder(self.pushButton_15, self.pushButton_16)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -272,4 +297,5 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "час гри"))
         self.label_4.setText(_translate("MainWindow", "00:00"))
         self.pushButton_17.setText(_translate("MainWindow", "Нова гра"))
+        self.label_5.setText(_translate("MainWindow", "Натисніть на кнопку \"Нова гра\" щоб почати"))
 

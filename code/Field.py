@@ -58,3 +58,11 @@ class Field:
 
     def is_sorted(self):
         return self.arr == list(range(1, FIELD_SIZE + 1))
+
+    def matrix_view(self):
+        res = ""
+        for i in range(FIELD_SIDE):
+            for j in range(FIELD_SIDE):
+                res += f"{str(self.arr[i * FIELD_SIDE + j]).replace(str(FIELD_SIZE), '  '):>2} "
+            res += "\n"
+        return res
