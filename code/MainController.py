@@ -16,14 +16,15 @@ from DialogView import StartDialogView, EndDialogView
 class MainController:
     def __init__(self):
         self.__field = Field()
-        self.__solver = Solver(deepcopy(self.__field))
+        self.__solver = None
 
         self.__initial_field = None
         self.__reorder_cell_ind = None
+        self.__solution_is_valid = False
 
         self.__solution = []
         self.__solution_timer = QTimer()
-        self.__solution_timer.timeout.connect(self.make_solution_step)
+        self.__solution_timer.timeout.connect(self.__make_solution_step)
 
         self.__moves_count = 0
         self.__sec_count = 0
@@ -42,9 +43,10 @@ class MainController:
             change = index - self.__field.space_ind
             self.__make_space_swap(change)
             if self.__timer.isActive():
-                if change != self.__solution.pop(0):
-                    self.__generate_solution()
-                elif self.__field.is_sorted():
+                if self.__solution_is_valid:
+                    self.__solution_is_valid = False
+                    self.__solution = []
+                if self.__field.is_sorted():
                     self.__end_game()
                     self.__win_game()
 
@@ -92,10 +94,9 @@ class MainController:
         self.__start_game()
 
     def __start_game(self):
-        self.__view.begin_game()
+        self.__view.connect_solver()
         self.__view.set_hint(INGAME_HINT)
         self.__initial_field = self.__field.matrix_view()
-        self.__generate_solution()
         self.__timer.start(SEC_TO_MS)
 
     def __end_game(self):
@@ -143,6 +144,7 @@ class MainController:
             self.__view.set_hint(START_GAME_HINT)
 
     def __turn_on_solver(self):
+        self.__generate_solution()
         self.__solution_timer.start(SOLVE_INTERVAL)
         self.__view.solver_start()
         self.__view.set_hint(SOLVER_HINT)
@@ -150,14 +152,20 @@ class MainController:
     def switch_solver(self):
         if self.__solution_timer.isActive():
             self.__turn_off_solver()
-        elif self.__solution:
+        else:
             self.__turn_on_solver()
 
     def __generate_solution(self):
         self.__solver = Solver(deepcopy(self.__field))
         self.__solution = self.__solver.solve()
 
-    def make_solution_step(self):
+    def step_pushed(self):
+        if not self.__solution_is_valid:
+            self.__generate_solution()
+            self.__solution_is_valid = True
+        self.__make_solution_step()
+
+    def __make_solution_step(self):
         self.__make_space_swap(self.__solution.pop(0))
         if not self.__solution:
             self.__end_game()

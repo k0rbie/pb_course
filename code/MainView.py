@@ -121,8 +121,8 @@ class MainView(QMainWindow):
     def remove_frog(self, ind):
         self.__cells[ind].setText("")
 
-    def begin_game(self):
-        self.__connect_button(self.__step_button, self.__controller.make_solution_step)
+    def connect_solver(self):
+        self.__connect_button(self.__step_button, self.__controller.step_pushed)
         self.__connect_button(self.__solver_button, self.__controller.switch_solver)
 
     def lock_solver(self):
