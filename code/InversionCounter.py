@@ -1,20 +1,20 @@
 class InversionCounter:
     @staticmethod
     def num_inver(arr):
-        return InversionCounter.inv_merge_sort(arr, 0, len(arr) - 1)
+        return InversionCounter.__inv_merge_sort(arr, 0, len(arr) - 1)
 
     @staticmethod
-    def inv_merge_sort(arr, l, r):
+    def __inv_merge_sort(arr, l, r):
         if l == r:
             return 0
         m = r + l >> 1
-        sw1 = InversionCounter.inv_merge_sort(arr, l, m)
-        sw2 = InversionCounter.inv_merge_sort(arr, m + 1, r)
-        arr[l:r + 1], swap_count = InversionCounter.merge(arr, l, m, r)
+        sw1 = InversionCounter.__inv_merge_sort(arr, l, m)
+        sw2 = InversionCounter.__inv_merge_sort(arr, m + 1, r)
+        arr[l:r + 1], swap_count = InversionCounter.__merge(arr, l, m, r)
         return sw1 + sw2 + swap_count
 
     @staticmethod
-    def merge(arr, l1, r1, r2):
+    def __merge(arr, l1, r1, r2):
         i1 = l1
         i2 = r1 + 1
         new_arr = []

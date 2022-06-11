@@ -1,9 +1,9 @@
 class MyQueue:
     def __init__(self):
-        self.queue = []
+        self.__queue = []
 
-    def enqueue(self, x):
-        self.queue.append(x)        # 1
+    def enqueue(self, el):
+        self.__queue.append(el)        # 1
 
     def dequeue(self):
-        return self.queue.pop(0)    # n
+        return self.__queue.pop(0)    # n

@@ -1,4 +1,3 @@
-from Graph import Graph
 from InversionCounter import InversionCounter as InvCount
 from random import shuffle
 from Constants import *
@@ -7,7 +6,6 @@ from Constants import *
 class Field:
     def __init__(self):
         self.arr = []
-        self.adj_list = Graph.puzzle_adj_list()
         for i in range(1, FIELD_SIZE + 1):
             self.arr.append(i)
         self.space_ind = FIELD_SIZE - 1
@@ -15,17 +13,14 @@ class Field:
         self.space_y = FIELD_SIDE - 1
 
     def find_space(self):
-        self.space_ind = self.ind(FIELD_SIZE)
-        self.update_space_coords()
+        self.space_ind = self.value_ind(FIELD_SIZE)
+        self.__update_space_coords()
 
-    def update_space_coords(self):
-        self.space_x, self.space_y = self.get_coords(self.space_ind)
+    def __update_space_coords(self):
+        self.space_x, self.space_y = \
+            self.space_ind % FIELD_SIDE, self.space_ind // FIELD_SIDE
 
-    @staticmethod
-    def get_coords(ind):
-        return ind % FIELD_SIDE, ind // FIELD_SIDE
-
-    def ind(self, val):
+    def value_ind(self, val):
         return self.arr.index(val)
 
     def invar(self):
@@ -36,19 +31,16 @@ class Field:
         return space_y_par == inversions_par
 
     def space_swap(self, change):
-        if not change:
-            return change
-        if self.next_to_space(self.space_ind + change):
+        if change in DIRECTIONS:
             self.two_elements_swap(self.space_ind, self.space_ind + change)
-            self.update_space_coords()
-            return change
+            self.__update_space_coords()
 
     def two_elements_swap(self, ind1, ind2):
         self.arr[ind1], self.arr[ind2] = self.arr[ind2], self.arr[ind1]
         self.find_space()
 
     def next_to_space(self, ind):
-        return ind in self.adj_list[self.space_ind]
+        return self.space_ind - ind in DIRECTIONS
 
     def shuffle_arr(self):
         prev = self.arr.copy()

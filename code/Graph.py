@@ -5,7 +5,7 @@ from Constants import *
 
 class Graph:
     def __init__(self, adj_list):
-        self.adj_list = adj_list
+        self._adj_list = adj_list
 
     @staticmethod
     def puzzle_adj_list():  # n = n0 ^ 2
@@ -30,7 +30,7 @@ class Graph:
         p[beg] = None
         v = beg
         while v != end:  # n
-            for u in self.adj_list[v]:  # n0^2
+            for u in self._adj_list[v]:  # n0^2
                 if p[u] == -1:
                     p[u] = v
                     queue.enqueue(u)
@@ -44,30 +44,27 @@ class Graph:
 
 class LockableGraph(Graph):
     def __init__(self, size):
-        self.opened_vert = set(range(size))
-        self.closed_vert = set()
+        self.__opened_vert = set(range(size))
 
-        self.full = self.puzzle_adj_list()
+        self.__full = self.puzzle_adj_list()
 
-        Graph.__init__(self, deepcopy(self.full))
+        Graph.__init__(self, deepcopy(self.__full))
 
     def close_vert(self, *v):
         for i in v:
-            if i in self.closed_vert:
+            if i not in self.__opened_vert:
                 continue
-            self.closed_vert.add(i)
-            self.opened_vert.remove(i)
-            for j in self.adj_list[i]:  # c
-                self.adj_list[j].remove(i)  # n
-            self.adj_list[i] = []
+            self.__opened_vert.remove(i)
+            for j in self._adj_list[i]:  # c
+                self._adj_list[j].remove(i)  # n
+            self._adj_list[i] = []
 
     def open_vert(self, *v):
         for i in v:
-            if i in self.opened_vert:
+            if i in self.__opened_vert:
                 continue
-            self.opened_vert.add(i)
-            self.closed_vert.remove(i)
-            for j in self.full[i]:  # c
-                if j not in self.closed_vert:
-                    self.adj_list[j].append(i)  # c
-                    self.adj_list[i].append(j)  # c
+            self.__opened_vert.add(i)
+            for j in self.__full[i]:  # c
+                if j in self.__opened_vert:
+                    self._adj_list[j].append(i)  # c
+                    self._adj_list[i].append(j)  # c
