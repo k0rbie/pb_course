@@ -26,7 +26,8 @@ class Field:
     def invar(self):
         check_arr = self.arr.copy()
         check_arr.remove(FIELD_SIZE)
-        inversions_par = InvCount.num_inver(check_arr) % 2
+        inv = InvCount(check_arr)
+        inversions_par = inv.num_inver() % 2
         space_y_par = (FIELD_SIDE - self.space_y - 1) % 2
         return space_y_par == inversions_par
 

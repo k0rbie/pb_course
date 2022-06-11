@@ -77,7 +77,6 @@ class MainView(QMainWindow):
         self.__disconnect_button(self.__start_button)
 
     def finish_reorder(self):
-        self.__start_button.disconnect()
         self.__connect_button(self.__start_button, self.__controller.chose_start)
         self.switch_to_move()
 
