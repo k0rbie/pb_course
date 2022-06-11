@@ -1,5 +1,5 @@
-from start_dialog import Ui_Dialog as Ui_Start_Dialog
-from end_dialog import Ui_Dialog as Ui_End_Dialog
+from UiStartDialog import UiStartDialog as Ui_Start_Dialog
+from UiEndDialog import UiEndDialog as Ui_End_Dialog
 from PyQt5.QtWidgets import QDialog
 
 

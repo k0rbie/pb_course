@@ -47,8 +47,8 @@ class Field:
         self.arr[ind1], self.arr[ind2] = self.arr[ind2], self.arr[ind1]
         self.find_space()
 
-    def next_to_space(self, ind_1):
-        return ind_1 in self.adj_list[self.space_ind]
+    def next_to_space(self, ind):
+        return ind in self.adj_list[self.space_ind]
 
     def shuffle_arr(self):
         prev = self.arr.copy()

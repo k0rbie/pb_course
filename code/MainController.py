@@ -16,12 +16,12 @@ from DialogView import StartDialogView, EndDialogView
 class MainController:
     def __init__(self):
         self.__field = Field()
-        self.__solver = None
 
+        self.__solver = None
         self.__initial_field = None
         self.__reorder_cell_ind = None
-        self.__solution_is_valid = False
 
+        self.__solution_is_valid = False
         self.__solution = []
         self.__solution_timer = QTimer()
         self.__solution_timer.timeout.connect(self.__make_solution_step)
@@ -43,9 +43,8 @@ class MainController:
             change = index - self.__field.space_ind
             self.__make_space_swap(change)
             if self.__timer.isActive():
-                if self.__solution_is_valid:
+                if self.__solution_is_valid and change != self.__solution.pop(0):
                     self.__solution_is_valid = False
-                    self.__solution = []
                 if self.__field.is_sorted():
                     self.__end_game()
                     self.__win_game()
@@ -144,7 +143,7 @@ class MainController:
             self.__view.set_hint(START_GAME_HINT)
 
     def __turn_on_solver(self):
-        self.__generate_solution()
+        self.__validate_solution()
         self.__solution_timer.start(SOLVE_INTERVAL)
         self.__view.solver_start()
         self.__view.set_hint(SOLVER_HINT)
@@ -159,10 +158,13 @@ class MainController:
         self.__solver = Solver(deepcopy(self.__field))
         self.__solution = self.__solver.solve()
 
-    def step_pushed(self):
+    def __validate_solution(self):
         if not self.__solution_is_valid:
             self.__generate_solution()
             self.__solution_is_valid = True
+
+    def step_pushed(self):
+        self.__validate_solution()
         self.__make_solution_step()
 
     def __make_solution_step(self):

@@ -1,4 +1,4 @@
-from face import Ui_MainWindow
+from UiMainWindow import UiMainWindow
 from PyQt5.QtWidgets import QMainWindow
 from functools import partial
 from Constants import *
@@ -9,7 +9,7 @@ class MainView(QMainWindow):
         super(MainView, self).__init__()
         self.__controller = controller
 
-        self.__ui = Ui_MainWindow()
+        self.__ui = UiMainWindow()
         self.__ui.setupUi(self)
 
         self.__cells = [self.__ui.pushButton,
