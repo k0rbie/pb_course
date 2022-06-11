@@ -11,7 +11,7 @@ class InversionCounter:
         m = r + l >> 1
         sw1 = self.__inv_merge_sort(l, m)
         sw2 = self.__inv_merge_sort(m + 1, r)
-        self.__arr[l:r + 1], swap_count = self.__merge(l, m, r)
+        swap_count = self.__merge(l, m, r)
         return sw1 + sw2 + swap_count
 
     def __merge(self, l1, r1, r2):
@@ -27,5 +27,5 @@ class InversionCounter:
                 new_arr.append(self.__arr[i2])
                 i2 += 1
                 swap_count += r1 - i1 + 1
-        new_arr += self.__arr[i1:r1 + 1] + self.__arr[i2:r2 + 1]
-        return new_arr, swap_count
+        self.__arr[l1:r2 + 1] = new_arr + self.__arr[i1:r1 + 1] + self.__arr[i2:r2 + 1]
+        return swap_count

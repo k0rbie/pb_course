@@ -99,6 +99,7 @@ class MainController:
         self.__timer.start(SEC_TO_MS)
 
     def __end_game(self):
+        self.__solution_is_valid = False
         self.__turn_off_solver()
         self.__view.set_hint(START_GAME_HINT)
         self.__timer.stop()
