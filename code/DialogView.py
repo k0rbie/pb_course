@@ -11,9 +11,6 @@ class StartDialogView(QDialog):
         self.__ui = UiStartDialog()
         self.__ui.setupUi(self)
 
-        self.__connect_buttons()
-
-    def __connect_buttons(self):
         self.__ui.pushButton.clicked.connect(self.close)
         self.__ui.pushButton_2.clicked.connect(self.close)
         self.__ui.pushButton.clicked.connect(self.__controller.random_reorder)
@@ -28,9 +25,6 @@ class EndDialogView(QDialog):
         self.__ui = UiEndDialog()
         self.__ui.setupUi(self)
 
-        self.__connect_buttons()
-
-    def __connect_buttons(self):
         self.__ui.pushButton.clicked.connect(self.close)
         self.__ui.pushButton_2.clicked.connect(self.close)
         self.__ui.pushButton.clicked.connect(self.__controller.save_to_file)

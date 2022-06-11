@@ -8,7 +8,6 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-
 class UiMainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -251,7 +250,6 @@ class UiMainWindow(object):
         self.label_5.setObjectName("label_5")
         MainWindow.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.pushButton_17, self.pushButton_18)
         MainWindow.setTabOrder(self.pushButton_18, self.pushButton_19)
@@ -272,7 +270,6 @@ class UiMainWindow(object):
         MainWindow.setTabOrder(self.pushButton_14, self.pushButton_15)
         MainWindow.setTabOrder(self.pushButton_15, self.pushButton_16)
 
-    def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Гра у 15"))
         self.pushButton_4.setText(_translate("MainWindow", "4"))
