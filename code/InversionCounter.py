@@ -2,10 +2,10 @@ class InversionCounter:
     def __init__(self, arr):
         self.__arr = arr
 
-    def num_inver(self):
+    def num_inver(self):  # обраховує кількість інверсій в масиві
         return self.__inv_merge_sort(0, len(self.__arr) - 1)
 
-    def __inv_merge_sort(self, l, r):
+    def __inv_merge_sort(self, l, r):  # обраховує кількість інверсій у підмасиві
         if l == r:
             return 0
         m = r + l >> 1
@@ -14,7 +14,7 @@ class InversionCounter:
         swap_count = self.__merge(l, m, r)
         return sw1 + sw2 + swap_count
 
-    def __merge(self, l1, r1, r2):
+    def __merge(self, l1, r1, r2):  # обʼєднує два підмасиви та повертає кількість інверсій
         i1 = l1
         i2 = r1 + 1
         new_arr = []

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>Python</ID>
+  <OriginalElement>#/home/neil/KPIstuff/pb_course/code/MainController.py</OriginalElement>
+  <nodes>
+    <node x="360.0" y="-535.0">MainController.MainController</node>
+    <node x="-226.0" y="-487.0">MainView.MainView</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic" zoom="0.5504215851602025" showDependencies="false" x="330.60753676470574" y="58.249999999999886" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+  </Categories>
+</Diagram>
+

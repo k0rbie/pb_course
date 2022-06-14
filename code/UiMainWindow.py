@@ -1,35 +1,28 @@
-# -*- coding: utf-8 -*-
+from PyQt5 import QtCore, QtWidgets
 
-# Form implementation generated from reading ui file 'face.ui'
-#
-# Created by: PyQt5 UI code generator 5.9.2
-#
-# WARNING! All changes made in this file will be lost!
-
-from PyQt5 import QtCore, QtGui, QtWidgets
 
 class UiMainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow):  # налаштовує інтерфейс
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(900, 725)
         MainWindow.setMinimumSize(QtCore.QSize(900, 725))
         MainWindow.setMaximumSize(QtCore.QSize(900, 725))
         MainWindow.setSizeIncrement(QtCore.QSize(612, 826))
         MainWindow.setStyleSheet("QLabel{font:600 18pt \"FreeMono\" bold;\n"
-"                    color: white}\n"
-"QLabel#label_5{font-size: 18px}\n"
-"QPushButton{font:600 22pt \"FreeMono\" bold;\n"
-"                    color: white}\n"
-"QWidget{background-color: darkgray}\n"
-"QLabel{background-color: none}\n"
-"QWidget#centralwidget{background-color: gray}\n"
-"QPushButton{background-color: gray}\n"
-"QPushButton#pushButton_17{font:600 17pt \"FreeMono\" bold;\n"
-"                    color: white}\n"
-"QPushButton#pushButton_18{font:600 17pt \"FreeMono\" bold;\n"
-"                    color: white}\n"
-"QPushButton#pushButton_19{font:600 17pt \"FreeMono\" bold;\n"
-"                    color: white}")
+                                 "                    color: white}\n"
+                                 "QLabel#label_5{font-size: 18px}\n"
+                                 "QPushButton{font:600 22pt \"FreeMono\" bold;\n"
+                                 "                    color: white}\n"
+                                 "QWidget{background-color: darkgray}\n"
+                                 "QLabel{background-color: none}\n"
+                                 "QWidget#centralwidget{background-color: gray}\n"
+                                 "QPushButton{background-color: gray}\n"
+                                 "QPushButton#pushButton_17{font:600 17pt \"FreeMono\" bold;\n"
+                                 "                    color: white}\n"
+                                 "QPushButton#pushButton_18{font:600 17pt \"FreeMono\" bold;\n"
+                                 "                    color: white}\n"
+                                 "QPushButton#pushButton_19{font:600 17pt \"FreeMono\" bold;\n"
+                                 "                    color: white}")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
@@ -221,7 +214,7 @@ class UiMainWindow(object):
         self.label_2 = QtWidgets.QLabel(self.gridLayoutWidget_3)
         self.label_2.setMinimumSize(QtCore.QSize(129, 0))
         self.label_2.setMaximumSize(QtCore.QSize(129, 16777215))
-        self.label_2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_2.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.label_2.setObjectName("label_2")
         self.gridLayout_3.addWidget(self.label_2, 0, 1, 1, 1)
         self.label = QtWidgets.QLabel(self.gridLayoutWidget_3)
@@ -236,7 +229,7 @@ class UiMainWindow(object):
         self.label_4 = QtWidgets.QLabel(self.gridLayoutWidget_3)
         self.label_4.setMinimumSize(QtCore.QSize(129, 0))
         self.label_4.setMaximumSize(QtCore.QSize(129, 16777215))
-        self.label_4.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_4.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.label_4.setObjectName("label_4")
         self.gridLayout_3.addWidget(self.label_4, 1, 1, 1, 1)
         self.pushButton_17 = QtWidgets.QPushButton(self.centralwidget)
@@ -288,13 +281,12 @@ class UiMainWindow(object):
         self.pushButton_10.setText(_translate("MainWindow", "10"))
         self.pushButton_6.setText(_translate("MainWindow", "6"))
         self.pushButton_18.setText(_translate("MainWindow", "Наступний \n"
-"крок"))
+                                                            "крок"))
         self.pushButton_19.setText(_translate("MainWindow", "Автоматичне\n"
-"розвʼязування"))
+                                                            "розвʼязування"))
         self.label_2.setText(_translate("MainWindow", "0"))
         self.label.setText(_translate("MainWindow", "переміщень"))
         self.label_3.setText(_translate("MainWindow", "час гри"))
         self.label_4.setText(_translate("MainWindow", "00:00"))
         self.pushButton_17.setText(_translate("MainWindow", "Почати нову\n"
-"гру"))
-
+                                                            "гру"))

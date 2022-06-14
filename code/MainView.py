@@ -42,91 +42,91 @@ class MainView(QMainWindow):
         self.__connect_button(self.__ui.pushButton_17, self.__controller.chose_start)
         self.__connect_cells(self.__controller.try_move_cell)
 
-    def __connect_cells(self, slot):
+    def __connect_cells(self, slot):   # Підключення сигналів кнопок до методу
         for cell in self.__cells:
             cell.pressed.connect(partial(slot, self.__cells.index(cell)))
 
-    def __disconnect_cells(self):
+    def __disconnect_cells(self):      # Відключення методів від кнопок
         for cell in self.__cells:
             cell.disconnect()
 
-    def update_field(self, values):
+    def update_field(self, values):     # оновлення поля
         for button, value in zip(self.__cells, values):
             button.setText(str(value).replace(str(FIELD_SIZE), ""))
 
-    def switch_to_reorder(self, space_ind):
+    def switch_to_reorder(self, space_ind):  # Перемикання у режим користувацького задавання поля
         self.__disconnect_cells()
         self.__connect_cells(self.__controller.chose_reorder_cell)
         self.__cells[space_ind].setFlat(False)
 
-    def switch_to_move(self):
+    def switch_to_move(self):       # Перемикання у режим переміщення
         self.__disconnect_cells()
         self.__connect_cells(self.__controller.try_move_cell)
 
-    def swap_text(self, ind1, ind2):
+    def swap_text(self, ind1, ind2):    # Обмін текстом між кнопками
         cell1 = self.__cells[ind1]
         cell2 = self.__cells[ind2]
         saved = cell1.text()
         cell1.setText(cell2.text())
         cell2.setText(saved)
 
-    def enable_start(self):
+    def enable_start(self):     # увімкнення можливості почати гру
         self.__connect_button(self.__start_button, self.__controller.end_reorder)
 
-    def block_start(self):
+    def block_start(self):  # блокування можливості почати гри
         self.__disconnect_button(self.__start_button)
 
-    def finish_reorder(self):
+    def finish_reorder(self):   # вихід із режиму користувацького задавання поля
         self.__connect_button(self.__start_button, self.__controller.chose_start)
         self.switch_to_move()
 
-    def solver_start(self):
+    def solver_start(self):  # зміна тексту кнопки автоматичного розвʼязування при його увімкненні
         self.__solver_button.setText(OFF_SOLVER_BUTTON)
 
-    def solver_end(self):
+    def solver_end(self):  # зміна тексту кнопки автоматичного розвʼязування при його вимиканні
         self.__solver_button.setText(ON_SOLVER_BUTTON)
 
-    def moves_count_update(self, moves_count):
+    def moves_count_update(self, moves_count):  # оновлення тексту лічильника кроків
         self.__moves_label.setText(str(moves_count))
 
-    def timer_update(self, sec_count):
+    def timer_update(self, sec_count):  # оновлення відображення таймера
         self.__time_label.setText(f"{sec_count // MIN_TO_SEC:02}:{sec_count % MIN_TO_SEC:02}")
 
-    def connect_buttons(self):
+    def connect_buttons(self):  # підключення кнопок інтерфейсу
         self.__connect_button(self.__start_button, self.__controller.chose_start)
         self.__connect_button(self.__step_button, self.__controller.make_solution_step)
         self.__connect_button(self.__solver_button, self.__controller.switch_solver)
 
-    def __connect_button(self, button, slot):
+    def __connect_button(self, button, slot):  # підключення окремої кнопки
         self.__disconnect_button(button)
         button.clicked.connect(slot)
         button.setStyleSheet("")
 
     @staticmethod
-    def __disconnect_button(button):
+    def __disconnect_button(button):  # відключення кнопки
         try:
             button.disconnect()  # повертає помилку, якщо жодний сигнал не підключено
             button.setStyleSheet(BLOCKED_STYLESHEET)
         except TypeError:
             pass
 
-    def switch_flat(self, ind):
+    def switch_flat(self, ind):  # перемикає стан Flat кнопки
         cell = self.__cells[ind]
         cell.setFlat(not cell.isFlat())
 
-    def set_frog(self):
+    def set_frog(self):  # змінює текст порожньої клітинки
         self.__cells[-1].setText(FROG)
 
-    def remove_frog(self, ind):
+    def remove_frog(self, ind):  # прибирає текст порожньої клітинки
         self.__cells[ind].setText("")
 
-    def connect_solver(self):
+    def connect_solver(self):  # підключення кнопок розвʼязування
         self.__connect_button(self.__step_button, self.__controller.step_pushed)
         self.__connect_button(self.__solver_button, self.__controller.switch_solver)
 
-    def lock_solver(self):
+    def lock_solver(self):  # підключення кнопок розвʼязування
         self.__disconnect_button(self.__step_button)
         self.__disconnect_button(self.__solver_button)
 
-    def set_hint(self, text):
+    def set_hint(self, text):  # зміна тексту напису-підказки
         self.__hint_label.setText(text)

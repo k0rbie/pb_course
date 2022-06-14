@@ -8,23 +8,23 @@ class Graph:
         self._adj_list = adj_list
 
     @staticmethod
-    def puzzle_adj_list():  # n = n0 ^ 2
-        adj_list = {i: [] for i in range(FIELD_SIZE)}
+    def puzzle_adj_list():  # повертає список суміжності для гри у 15
+        _adj_list = {i: [] for i in range(FIELD_SIZE)}
 
         for i in range(FIELD_SIZE - FIELD_SIDE):
-            adj_list[i].append(i + FIELD_SIDE)
-            adj_list[i + FIELD_SIDE].append(i)
+            _adj_list[i].append(i + FIELD_SIDE)
+            _adj_list[i + FIELD_SIDE].append(i)
 
         ind = 0
         for i in range(FIELD_SIDE):
             for j in range(FIELD_SIDE - 1):
-                adj_list[ind].append(ind + 1)
-                adj_list[ind + 1].append(ind)
+                _adj_list[ind].append(ind + 1)
+                _adj_list[ind + 1].append(ind)
                 ind += 1
             ind += 1
-        return adj_list
+        return _adj_list
 
-    def shortest_path_search(self, beg, end):
+    def shortest_path_search(self, beg, end):  # знаходить найкоротший шлях між вершинами
         queue = MyQueue()
         p = [-1] * FIELD_SIZE
         p[beg] = None
@@ -50,7 +50,7 @@ class LockableGraph(Graph):
 
         Graph.__init__(self, deepcopy(self.__full))
 
-    def close_vert(self, *v):
+    def close_vert(self, *v):  # видаляє вершину
         for i in v:
             if i not in self.__opened_vert:
                 continue
@@ -59,7 +59,7 @@ class LockableGraph(Graph):
                 self._adj_list[j].remove(i)  # n
             self._adj_list[i] = []
 
-    def open_vert(self, *v):
+    def open_vert(self, *v):  # повертає раніше видалену вершину
         for i in v:
             if i in self.__opened_vert:
                 continue

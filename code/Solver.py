@@ -8,7 +8,7 @@ class Solver:
         self.__graph = LockableGraph(FIELD_SIZE)
         self.__seq = []
 
-    def solve(self):
+    def solve(self):      # розвʼязування ігрового поля
         for i in range(FIELD_SIDE - 3):
             self.__fill_line(i, vertical=False)
             self.__fill_line(i, vertical=True)
@@ -17,40 +17,40 @@ class Solver:
         self.__fill_last_three()
         return self.__seq
 
-    def __in_place(self, *arr_ind):
+    def __in_place(self, *arr_ind):     # перевірка чи відповідають вершини кінцевому розташуванню
         for ind in arr_ind:
             if self.__field.arr[ind] != ind + 1:
                 return False
         return True
 
-    def __add_moves(self, *moves):
+    def __add_moves(self, *moves):  # додавання переміщень у результуючий масив
         for move in moves:
             self.__seq.append(move)
             self.__field.space_swap(move)
 
-    def __move_space_to(self, dest):
+    def __move_space_to(self, dest):    # переміщення пробілу у вказану позицію
         prev = self.__field.space_ind
-        path = self.__graph.shortest_path_search(prev, dest)  # n^2
+        path = self.__graph.shortest_path_search(prev, dest)
         for i in path:
             self.__add_moves(i - prev)
             prev = i
 
-    def __move_value_to(self, val, dest):
+    def __move_value_to(self, val, dest):   # переміщення клітинки із вказаним значенням у задану позицію
         prev = self.__field.value_ind(val)
         path = self.__graph.shortest_path_search(prev, dest)
         for i in path:  # n^3
             self.__graph.close_vert(prev)
-            self.__move_space_to(i)           # n^2
+            self.__move_space_to(i)
             self.__graph.open_vert(prev)
             self.__add_moves(prev - i)
             prev = i
 
-    def __fill_line(self, num, vertical):
+    def __fill_line(self, num, vertical):  # заповнення рядка або стовпця кінцевими значеннями
         if vertical:
-            along, across = DOWN, RIGHT  # fill column
+            along, across = DOWN, RIGHT  # заповнення стовпця
             beg, end = (num + 1) * FIELD_SIDE + num, FIELD_SIDE*(FIELD_SIDE-1) + num
         else:
-            along, across = RIGHT, DOWN  # fill row
+            along, across = RIGHT, DOWN  # заповнення рядка
             beg, end = num * (FIELD_SIDE + 1), FIELD_SIDE*(num + 1)-1
         if self.__in_place(*(range(beg, end + 1, along))):
             self.__graph.close_vert(*(range(beg, end + 1, along)))
@@ -68,7 +68,7 @@ class Solver:
             self.__graph.open_vert(end + across)
             self.__graph.close_vert(end)
 
-    def __fill_two_of_five(self):
+    def __fill_two_of_five(self):  # заповнення третього стовпця з кінця
         start = FIELD_SIZE + UP + 3 * LEFT
         if not self.__in_place(start, start + DOWN):
             self.__move_value_to(start + DOWN + 1, start)
@@ -89,7 +89,7 @@ class Solver:
             self.__graph.close_vert(start)
             self.__graph.close_vert(start + DOWN)
 
-    def __fill_last_three(self):
+    def __fill_last_three(self):  # заповнення останніх трьох позицій
         for ind in FIELD_SIZE + UP + LEFT - 1, FIELD_SIZE + UP - 1, FIELD_SIZE + LEFT - 1:
             self.__move_value_to(ind + 1, ind)
             self.__graph.close_vert(ind)

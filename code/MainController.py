@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QApplication
 from copy import deepcopy
 
 from time import time, localtime, strftime
-import sys
+from sys import argv
 
 from MainView import MainView
 from DialogView import StartDialogView, EndDialogView
@@ -31,14 +31,14 @@ class MainController:
         self.__timer = QTimer()
         self.__timer.timeout.connect(self.__time_update)
 
-        app = QApplication(sys.argv)
+        app = QApplication(argv)
         self.__view = MainView(self)
         self.__start_dialog = StartDialogView(self)
         self.__end_dialog = EndDialogView(self)
         self.__view.show()
         app.exec()
 
-    def try_move_cell(self, index):
+    def try_move_cell(self, index):                 # Пересуває клітинку, якщо це можливо
         if self.__field.next_to_space(index):
             change = index - self.__field.space_ind
             self.__make_space_swap(change)
@@ -49,7 +49,7 @@ class MainController:
                     self.__end_game()
                     self.__win_game()
 
-    def random_reorder(self):
+    def random_reorder(self):                   # Випадкова генерація поля
         self.__view.switch_flat(self.__field.space_ind)
         self.__field.shuffle_arr()
         if not self.__field.invar():
@@ -61,11 +61,11 @@ class MainController:
         self.__view.switch_flat(self.__field.space_ind)
         self.__start_game()
 
-    def user_reorder(self):
+    def user_reorder(self):                # Перехід до режиму користувацького задавання поля
         self.__view.switch_to_reorder(self.__field.space_ind)
         self.__update_rebase_view()
 
-    def chose_reorder_cell(self, cell_ind):
+    def chose_reorder_cell(self, cell_ind):     # Зміна клітинок місцями під час користувацьокого задавання
         if self.__reorder_cell_ind is not None:
             self.__field.two_elements_swap(cell_ind, self.__reorder_cell_ind)
             self.__view.swap_text(cell_ind, self.__reorder_cell_ind)
@@ -76,7 +76,7 @@ class MainController:
             self.__view.switch_flat(cell_ind)
             self.__reorder_cell_ind = cell_ind
 
-    def __update_rebase_view(self):
+    def __update_rebase_view(self):     # Оновлення інтерфейсу в залежності від наявності розвʼязання
         if self.__field.is_sorted():
             self.__view.block_start()
             self.__view.set_hint(SORTED_HINT_TEXT)
@@ -87,29 +87,29 @@ class MainController:
             self.__view.block_start()
             self.__view.set_hint(UNSOLVABLE_HINT_TEXT)
 
-    def end_reorder(self):
+    def end_reorder(self):      # Вихід із режиму користувацького задавання та початок гри
         self.__view.switch_flat(self.__field.space_ind)
         self.__view.finish_reorder()
         self.__start_game()
 
-    def __start_game(self):
+    def __start_game(self):     # Початок гри
         self.__view.connect_solver()
         self.__view.set_hint(INGAME_HINT)
         self.__initial_field = self.__field.matrix_view()
         self.__timer.start(SEC_TO_MS)
 
-    def __end_game(self):
+    def __end_game(self):      # Завершення гри
         self.__solution_is_valid = False
         self.__turn_off_solver()
         self.__view.set_hint(START_GAME_HINT)
         self.__timer.stop()
         self.__view.lock_solver()
 
-    def __win_game(self):
+    def __win_game(self):   # Перемога у грі
         self.__view.set_frog()
         self.__end_dialog.exec()
 
-    def chose_start(self):
+    def chose_start(self):  # Натискання на кнопку початку нової гри
         if self.__timer.isActive():
             self.__end_game()
         else:
@@ -120,22 +120,22 @@ class MainController:
         self.__time_update()
         self.__start_dialog.exec()
 
-    def save_to_file(self):
+    def save_to_file(self):  # Збереження даних у файл
         with open("results.txt", "a") as f:
             f.write(f"Час закінчення гри:   {strftime('%d.%m.%Y %H:%M:%S', localtime(time()))}\n")
             f.write(f"Кількість переміщень: {self.__moves_count}\n")
             f.write(f"Витрачений час:       {self.__sec_count} сек.\n")
             f.write(f"Початковий стан поля: \n{self.__initial_field}\n")
 
-    def __time_update(self):
+    def __time_update(self):      # Оновлення таймера
         self.__sec_count += 1
         self.__view.timer_update(self.__sec_count)
 
-    def __moves_update(self):
+    def __moves_update(self):       # Оновлення кількості переміщень
         self.__moves_count += 1
         self.__view.moves_count_update(self.__moves_count)
 
-    def __turn_off_solver(self):
+    def __turn_off_solver(self):     # Вимкнення автоматичного розвʼязання
         self.__solution_timer.stop()
         self.__view.solver_end()
         if self.__timer.isActive():
@@ -143,38 +143,38 @@ class MainController:
         else:
             self.__view.set_hint(START_GAME_HINT)
 
-    def __turn_on_solver(self):
+    def __turn_on_solver(self):      # Увімкнення автоматичного розвʼязання
         self.__validate_solution()
         self.__solution_timer.start(SOLVE_INTERVAL)
         self.__view.solver_start()
         self.__view.set_hint(SOLVER_HINT)
 
-    def switch_solver(self):
+    def switch_solver(self):       # Перемикання режиму автоматичного розвʼязання
         if self.__solution_timer.isActive():
             self.__turn_off_solver()
         else:
             self.__turn_on_solver()
 
-    def __generate_solution(self):
+    def __generate_solution(self):  # Генерація розвʼязку
         self.__solver = Solver(deepcopy(self.__field))
         self.__solution = self.__solver.solve()
 
-    def __validate_solution(self):
+    def __validate_solution(self):   # Перевірка актуальності розвʼязку
         if not self.__solution_is_valid:
             self.__generate_solution()
             self.__solution_is_valid = True
 
-    def step_pushed(self):
+    def step_pushed(self):      # Натискання на кнопку наступного кроку
         self.__validate_solution()
         self.__make_solution_step()
 
-    def __make_solution_step(self):
+    def __make_solution_step(self):  # Виконання наступного кроку,
         self.__make_space_swap(self.__solution.pop(0))
         if not self.__solution:
             self.__end_game()
             self.__win_game()
 
-    def __make_space_swap(self, change):
+    def __make_space_swap(self, change):  # Переміщення пробілу
         self.__field.space_swap(change)
         space = self.__field.space_ind
         self.__view.swap_text(space, space - change)
